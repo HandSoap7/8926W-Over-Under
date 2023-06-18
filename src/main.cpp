@@ -1,5 +1,6 @@
 #include "main.h"
 #include "pros/adi.hpp"
+#include "puncher.hpp"
 
 
 /////
@@ -62,8 +63,17 @@ Drive chassis (
 void initialize() {
   // Print our branding over your terminal :D
   ez::print_ez_template();
+
+  // Initialize the puncher
+  
   
   pros::delay(500); // Stop the user from doing anything while legacy ports configure.
+
+
+  // Start the puncher reload tasks
+  pros::Task Reload_Rotation(puncher_reload_rotation_task);
+  pros::Task Reload_Limit(puncher_reload_limit_task);
+
 
   // Configure your chassis controls
   chassis.toggle_modify_curve_with_controller(true); // Enables modifying the controller curve with buttons on the joysticks
@@ -79,12 +89,6 @@ void initialize() {
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.add_autons({
     Auton("Example Drive\n\nDrive forward and come back.", drive_example),
-    Auton("Example Turn\n\nTurn 3 times.", turn_example),
-    Auton("Drive and Turn\n\nDrive forward, turn, come back. ", drive_and_turn),
-    Auton("Drive and Turn\n\nSlow down during drive.", wait_until_change_speed),
-    Auton("Swing Example\n\nSwing, drive, swing.", swing_example),
-    Auton("Combine all 3 movements", combining_movements),
-    Auton("Interference\n\nAfter driving forward, robot performs differently if interfered or not.", interfered_example),
   });
 
   // Initialize chassis and auton selector
@@ -155,8 +159,6 @@ void autonomous() {
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
-pros::ADIDigitalIn limit1 ('A');
-pros::ADIDigitalIn limit2 ('B');
 
 void opcontrol() {
   // This is preference to what you like to drive on.
@@ -170,9 +172,32 @@ void opcontrol() {
     // chassis.arcade_flipped(ez::SPLIT); // Flipped split arcade
     // chassis.arcade_flipped(ez::SINGLE); // Flipped single arcade
 
-    printf("Limit 1: %d\n", limit1.get_value());
-    //printf("Limit 2: %d\n", limit2.get_value());
-    pros::delay(500);
+
+    //puncher code
+
+    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
+      puncher_fire();
+    } else {
+    
+    }
+
+
+    //intake code
+
+    //intake into the robot
+    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
+      intake_in();
+    } else {
+      intake_stop();
+    }
+
+    //intake out of the robot
+    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+      intake_out();
+    } else {
+      intake_stop();
+    }
+
 
     pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }
