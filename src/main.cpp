@@ -1,4 +1,5 @@
 #include "main.h"
+#include "pros/adi.hpp"
 
 
 /////
@@ -154,6 +155,9 @@ void autonomous() {
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
+pros::ADIDigitalIn limit1 ('A');
+pros::ADIDigitalIn limit2 ('B');
+
 void opcontrol() {
   // This is preference to what you like to drive on.
   chassis.set_drive_brake(MOTOR_BRAKE_COAST);
@@ -166,9 +170,9 @@ void opcontrol() {
     // chassis.arcade_flipped(ez::SPLIT); // Flipped split arcade
     // chassis.arcade_flipped(ez::SINGLE); // Flipped single arcade
 
-    // . . .
-    // Put more user control code here!
-    // . . .
+    printf("Limit 1: %d\n", limit1.get_value());
+    //printf("Limit 2: %d\n", limit2.get_value());
+    pros::delay(500);
 
     pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }
