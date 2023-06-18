@@ -13,11 +13,11 @@
 Drive chassis (
   // Left Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  {2, 5}
+  {-1,-2,-3}
 
   // Right Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  ,{-3, -4}
+  ,{11,12,20}
 
   // IMU Port
   ,21
