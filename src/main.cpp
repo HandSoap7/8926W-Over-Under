@@ -161,43 +161,60 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 
+  //Weird code our drivers don't use
+  // chassis.arcade_flipped(ez::SPLIT); // Flipped split arcade
+  // chassis.arcade_flipped(ez::SINGLE); // Flipped single arcade
+  // chassis.arcade_standard(ez::SINGLE); // Standard single arcade
+
 void opcontrol() {
   // This is preference to what you like to drive on.
+  // We use coast because it increases the time before motor burnout
   chassis.set_drive_brake(MOTOR_BRAKE_COAST);
+
+  
 
   while (true) {
 
-    chassis.tank(); // Tank control
-    // chassis.arcade_standard(ez::SPLIT); // Standard split arcade
-    // chassis.arcade_standard(ez::SINGLE); // Standard single arcade
-    // chassis.arcade_flipped(ez::SPLIT); // Flipped split arcade
-    // chassis.arcade_flipped(ez::SINGLE); // Flipped single arcade
+    //drive code using ez template
 
+    chassis.tank(); // Tank control for Will (match driver)
+    //chassis.arcade_standard(ez::SPLIT); // Standard split arcade for Sarah (skills driver)
+    
+
+
+  
 
     //puncher code
 
+    // When a new press is detected on R1, the puncher will override the reload task and move a little more, deactivting the slip gear and releases the puncher
+    // This also ensures if accidentally pressed while reloading, the puncher will continue to reload
     if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
       puncher_fire();
     } else {
-    
+      // puncher reload task is already running so it will automatically override the puncher_fire velocity of 0 after the void ends
     }
+
+
+
 
 
     //intake code
 
-    //intake into the robot
+    //intake into the robot if L1 is being pressed
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
       intake_in();
     } else {
       intake_stop();
     }
 
-    //intake out of the robot
+    //intake out of the robot if L2 is being pressed
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
       intake_out();
     } else {
-      intake_stop();
+      intake_stop(); 
     }
+
+    // intake stops if neither L1 or L2 are being pressed
 
 
     pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!  Keep this ez::util::DELAY_TIME

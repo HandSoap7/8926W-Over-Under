@@ -9,9 +9,12 @@
 //Puncher motor, limit switches, and rotation sensor ports
 pros::Motor puncher(9, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
 
+
+// Recognizes the type of value (digital(0/1) or analog(0-127)), the name in the code, and the port on the brain
 pros::ADIDigitalIn puncher_limit('A');
 pros::ADIDigitalIn puncher_limit2('B');
 
+// Recognizes the type of sensor, the name in the code, and the port on the brain
 pros::Rotation puncher_rotation(9);
 
 
@@ -56,6 +59,7 @@ void puncher_init() {
 
 
 //Function to overide the puncher reload task and run the puncher motor
+// Used to actually fire the puncher
 void puncher_fire() {
   puncher.move_velocity(200);
   pros::delay(50);
@@ -66,4 +70,24 @@ void puncher_fire() {
 //Function to stop the puncher motor (shouldn't be used in most cases)
 void puncher_stop() {
   puncher.move_velocity(0);
+}
+
+//Function to return the puncher rotation sensor degree value
+double puncher_get_rotation() {
+  return puncher_rotation.get_angle();
+}
+
+//Function to return the puncher limit switch value
+bool puncher_get_limit() {
+  return puncher_limit.get_value();
+}
+
+//Function to return the puncher limit switch value
+bool puncher_get_limit2() {
+  return puncher_limit2.get_value();
+}
+
+//Function to reset the rotation sensor degrees to 0
+void rotation_reset() {
+  puncher_rotation.reset();
 }
