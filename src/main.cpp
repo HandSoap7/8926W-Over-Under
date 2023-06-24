@@ -177,8 +177,8 @@ void opcontrol() {
 
     //drive code using ez template
 
-    chassis.tank(); // Tank control for Will (match driver)
-    //chassis.arcade_standard(ez::SPLIT); // Standard split arcade for Sarah (skills driver)
+    //chassis.tank(); // Tank control for Will (match driver)
+    chassis.arcade_standard(ez::SPLIT); // Standard split arcade for Sarah (skills driver)
     
 
 
@@ -203,12 +203,9 @@ void opcontrol() {
     //intake into the robot if L1 is being pressed
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
       intake_in();
-    } else {
-      intake_stop();
     }
-
     //intake out of the robot if L2 is being pressed
-    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
       intake_out();
     } else {
       intake_stop(); 
