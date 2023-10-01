@@ -1,4 +1,8 @@
+#include "autons.hpp"
+#include "intake.hpp"
 #include "main.h"
+#include "pistons.hpp"
+#include <set>
 
 
 /////
@@ -249,3 +253,105 @@ void interfered_example() {
 // Make your own autonomous functions here!
 // . . .
 
+void SixBallOffensive() {
+  //basic initialization
+  //pros::Task Reload_Limit(catapult_reload_limit_task);
+  intake_coast();
+  WingL.set(false);
+  WingR.set(false);
+  intakeActuate.set(false);
+
+  //start of auton
+  //intakeActuate.set(true);
+  intake_in(6000);
+
+  //drive to the first ball
+  chassis.set_drive_pid(2, DRIVE_SPEED, true);
+  chassis.wait_drive();
+
+  intake_stop();
+
+  //backup toawrds matchloader
+  chassis.set_drive_pid(-24, DRIVE_SPEED, true);
+  chassis.wait_drive();
+
+  //drive towards matchloader and sweep the matchload triball out
+  chassis.set_swing_pid(ez::RIGHT_SWING, 90, -TURN_SPEED);
+  chassis.wait_drive();
+
+  //drive towards goals
+  chassis.set_drive_pid(14, DRIVE_SPEED, true);
+  chassis.wait_drive();
+
+  //backup and repeat
+  chassis.set_drive_pid(-6, DRIVE_SPEED, true);
+  chassis.wait_drive();
+
+  chassis.set_drive_pid(7, DRIVE_SPEED, true);
+  chassis.wait_drive();
+
+  //backup and turn towards triball near the post
+  chassis.set_drive_pid(-4, DRIVE_SPEED, true);
+  chassis.wait_drive();
+
+  chassis.set_turn_pid(0, TURN_SPEED);
+  chassis.wait_drive();
+
+  intake_in(6000);
+
+  //drive towards triball
+  chassis.set_drive_pid(44, DRIVE_SPEED, true);
+  chassis.wait_drive();
+
+  intake_stop();
+
+  //backup, turn towards goal, and out take
+  chassis.set_drive_pid(-4, DRIVE_SPEED, true);
+  chassis.wait_drive();
+
+  chassis.set_turn_pid(145, TURN_SPEED);
+  chassis.wait_drive();
+
+  intake_out(12000);
+
+  //turn towards middle triball
+  chassis.set_turn_pid(90, TURN_SPEED);
+  chassis.wait_drive();
+
+  //drive towards middle triball while intaking
+  intake_in(8000);
+
+  chassis.set_drive_pid(24, DRIVE_SPEED, true);
+  chassis.wait_drive();
+
+  intake_stop();
+
+  //turn towards goal and sweep other triballs in
+  chassis.set_turn_pid(180, TURN_SPEED);
+  chassis.wait_drive();
+
+  WingL.set(true);
+  WingR.set(true);
+
+  intake_out(12000);
+
+  chassis.set_drive_pid(34, DRIVE_SPEED, true);
+  chassis.wait_drive();
+
+  //go back and forth to knock triballs in
+  chassis.set_drive_pid(-8, DRIVE_SPEED, true);
+  chassis.wait_drive();
+
+  chassis.set_drive_pid(10, DRIVE_SPEED, true);
+  chassis.wait_drive();
+
+  chassis.set_drive_pid(-2, DRIVE_SPEED, true);
+  chassis.wait_drive();
+
+  intake_stop();
+
+  //toggle off wings
+  WingL.set(false);
+  WingR.set(false);
+
+}

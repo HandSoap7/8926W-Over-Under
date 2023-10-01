@@ -8,5 +8,6 @@
 // Ex. inline PistonGroup NameOfPiston('Port'(A-H), true/false)
 
 // The default state should be what makes the robot in size
-inline PistonGroup liftDeploy('A', false);
-inline PistonGroup liftPullUp('B', false);
+inline PistonGroup WingR('F', false);
+inline PistonGroup WingL('D', false);
+inline PistonGroup intakeActuate('A', false);

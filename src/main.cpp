@@ -1,8 +1,16 @@
 #include "main.h"
-#include "pros/adi.hpp"
-#include "puncher.hpp"
+#include "EZ-Template/util.hpp"
+#include "autons.hpp"
+#include "display/lv_objx/lv_btnm.h"
+#include "display/lv_objx/lv_imgbtn.h"
+#include "catapult.hpp"
 #include "intake.hpp"
-
+#include "pistons.hpp"
+#include "pros/adi.h"
+#include "pros/misc.h"
+#include "pros/misc.hpp"
+#include "pros/rtos.hpp"
+#include <sys/types.h>
 
 /////
 // For instalattion, upgrading, documentations and tutorials, check out website!
@@ -14,14 +22,14 @@
 Drive chassis (
   // Left Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  {-1,-2,-3}
+  {-2,-8,9}
 
   // Right Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  ,{11,12,20}
+  ,{13,-16,18}
 
   // IMU Port
-  ,4
+  ,21
 
   // Wheel Diameter (Remember, 4" wheels are actually 4.125!)
   //    (or tracking wheel diameter)
@@ -65,21 +73,21 @@ void initialize() {
   // Print our branding over your terminal :D
   ez::print_ez_template();
 
-  // Initialize the puncher
+  // Initialize the catapult
   
   
   pros::delay(500); // Stop the user from doing anything while legacy ports configure.
 
 
-  // Start the puncher reload tasks
-  pros::Task Reload_Rotation(puncher_reload_rotation_task);
-  pros::Task Reload_Limit(puncher_reload_limit_task);
+  // Start the catapult reload tasks
+  //pros::Task Reload_Rotation(catapult_reload_rotation_task);
+  pros::Task Reload_Limit(catapult_reload_limit_task);
 
 
   // Configure your chassis controls
   chassis.toggle_modify_curve_with_controller(true); // Enables modifying the controller curve with buttons on the joysticks
   chassis.set_active_brake(0); // Sets the active brake kP. We recommend 0.1.
-  chassis.set_curve_default(0, 0); // Defaults for curve. If using tank, only the first parameter is used. (Comment this line out if you have an SD card!)  
+  chassis.set_curve_default(2.5, 5.5); // Defaults for curve. If using tank, only the first parameter is used. (Comment this line out if you have an SD card!)  
   default_constants(); // Set the drive to your own constants from autons.cpp!
   exit_condition_defaults(); // Set the exit conditions to your own constants from autons.cpp!
 
@@ -169,53 +177,73 @@ void autonomous() {
 void opcontrol() {
   // This is preference to what you like to drive on.
   // We use coast because it increases the time before motor burnout
-  chassis.set_drive_brake(MOTOR_BRAKE_COAST);
+   chassis.set_drive_brake(MOTOR_BRAKE_COAST);
+   uint32_t counterVar = 0; 
 
-  
 
-  while (true) {
+   bool MatchLoadSpam = false;
+
+   while (true) {
 
     //drive code using ez template
 
-    chassis.tank(); // Tank control for Will (match driver)
-    //chassis.arcade_standard(ez::SPLIT); // Standard split arcade for Sarah (skills driver)
+    //chassis.tank(); // Tank control for Will (match driver)
+    chassis.arcade_standard(ez::SPLIT); // Standard split arcade for Sarah (skills driver)
     
 
 
-  
+    intake_coast(); // Sets the intake to coast mode (no brake)
 
-    //puncher code
 
-    // When a new press is detected on R1, the puncher will override the reload task and move a little more, deactivting the slip gear and releases the puncher
-    // This also ensures if accidentally pressed while reloading, the puncher will continue to reload
-    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
-      puncher_fire();
-    } else {
-      // puncher reload task is already running so it will automatically override the puncher_fire velocity of 0 after the void ends
+    if(pros::E_CONTROLLER_DIGITAL_DOWN & pros::E_CONTROLLER_DIGITAL_B){
+      MatchLoadSpam = true;
+    }
+    else{
+      MatchLoadSpam = false;
     }
 
+    if(MatchLoadSpam == false){
+    //catapult code
 
+    // When a new press is detected on R1, the catapult will override the reload task and move a little more, deactivting the slip gear and releases the catapult
+    // This also ensures if accidentally pressed while reloading, the catapult will continue to reload
+    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
+      catapult_fire();                                       //catapult_reload_limit_task(); // Reloads the catapult
+      pros::Task Reload_Limit(catapult_reload_limit_task);
+    } else {
+      // catapult reload task is already running so it will automatically override the catapult_fire velocity of 0 after the void ends
+    } 
 
+    }
 
+    if(MatchLoadSpam == true){
+      RapidFire();
+    }
 
     //intake code
 
     //intake into the robot if L1 is being pressed
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-      intake_in();
-    } else {
-      intake_stop();
+      intake_in(7500);
+      pros::c::controller_rumble(CONTROLLER_MASTER, "."); 
     }
 
-    //intake out of the robot if L2 is being pressed
-    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-      intake_out();
-    } else {
+    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+     intake_out(11000);
+    }
+    
+    else {
       intake_stop(); 
     }
 
     // intake stops if neither L1 or L2 are being pressed
 
+    //pneumatic code
+    WingL.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT));
+    //WingL.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT));
+    WingR.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y));
+
+    intakeActuate.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2));
 
     pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }
