@@ -355,3 +355,17 @@ void SixBallOffensive() {
   WingR.set(false);
 
 }
+
+void FiveBallShooting(){
+
+  //basic initialization
+  //pros::Task Reload_Limit(catapult_reload_limit_task);
+  intake_coast();
+  WingL.set(false);
+  WingR.set(false);
+  intakeActuate.set(false);
+
+  //start of auton
+  
+
+}

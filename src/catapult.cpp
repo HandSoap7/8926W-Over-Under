@@ -32,12 +32,16 @@ void catapult_reload_rotation_task(void* param) {
     } else {
       cata_move(0);
     }
-    pros::delay(10);
+    pros::delay(20);
   }
 }
 
 
 bool runCata = true;
+
+void TaskState(bool State){
+  runCata = State;
+}
 
 //catapult reload task using limit switches
 //catapult stops when either limit switch is pressed and if neither are pressed it will run the motor
@@ -53,7 +57,7 @@ void catapult_reload_limit_task(void* param) {
     } else {
       cata_move(12000);
     }
-    pros::delay(200);
+    pros::delay(50);
 
     //printf(runCata ? "true\n" : "false\n")
     
@@ -82,6 +86,7 @@ void catapult_fire() {
 void RapidFire(){
   runCata = false;
   cata_move(12000);
+    runCata=true;
 }
 
 
@@ -107,3 +112,4 @@ bool catapult_get_limit() {
 void rotation_reset() {
   catapult_rotation.reset();
 }
+

@@ -22,7 +22,7 @@
 Drive chassis (
   // Left Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  {-2,-8,9}
+  {-10,-8,9}
 
   // Right Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
@@ -181,29 +181,28 @@ void opcontrol() {
    uint32_t counterVar = 0; 
 
 
-   bool MatchLoadSpam = false;
+   //bool MatchLoadSpam = false;
+
+   intake_coast(); // Sets the intake to coast mode (no brake)
 
    while (true) {
 
     //drive code using ez template
 
-    //chassis.tank(); // Tank control for Will (match driver)
-    chassis.arcade_standard(ez::SPLIT); // Standard split arcade for Sarah (skills driver)
+    chassis.tank(); // Tank control for Will (match driver)
+    //chassis.arcade_standard(ez::SPLIT); // Standard split arcade for Sarah (skills driver)
     
 
-
-    intake_coast(); // Sets the intake to coast mode (no brake)
-
-
-    if(pros::E_CONTROLLER_DIGITAL_DOWN & pros::E_CONTROLLER_DIGITAL_B){
-      MatchLoadSpam = true;
+    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN) && master.get_digital(pros::E_CONTROLLER_DIGITAL_B)){
+      RapidFire();
+      catapult_stop();
+      pros::Task Reload_Limit(catapult_reload_limit_task);
     }
+
     else{
-      MatchLoadSpam = false;
-    }
-
-    if(MatchLoadSpam == false){
     //catapult code
+    TaskState(true);
+    
 
     // When a new press is detected on R1, the catapult will override the reload task and move a little more, deactivting the slip gear and releases the catapult
     // This also ensures if accidentally pressed while reloading, the catapult will continue to reload
@@ -216,20 +215,21 @@ void opcontrol() {
 
     }
 
-    if(MatchLoadSpam == true){
-      RapidFire();
-    }
+    //printf("MatchLoadSpam: %d\n", MatchLoadSpam);
+
+
+
 
     //intake code
 
     //intake into the robot if L1 is being pressed
-    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-      intake_in(7500);
-      pros::c::controller_rumble(CONTROLLER_MASTER, "."); 
+    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+      intake_in(475);
+      pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, "."); 
     }
 
-    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-     intake_out(11000);
+    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+     intake_out(550);
     }
     
     else {
@@ -243,7 +243,7 @@ void opcontrol() {
     //WingL.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT));
     WingR.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y));
 
-    intakeActuate.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2));
+    intakeActuate.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1));
 
     pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }

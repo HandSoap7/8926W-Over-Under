@@ -16,3 +16,4 @@ bool catapult_get_limit();
 bool catapult_get_limit2();
 void rotation_reset();
 void RapidFire();
+void TaskState(bool State);
