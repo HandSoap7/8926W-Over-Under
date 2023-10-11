@@ -43,7 +43,7 @@ Drive chassis (
   //    (or gear ratio of tracking wheel)
   // eg. if your drive is 84:36 where the 36t is powered, your RATIO would be 2.333.
   // eg. if your drive is 36:60 where the 60t is powered, your RATIO would be 0.6.
-  ,0.75
+  ,1.375
 
   // Uncomment if using tracking wheels
   /*
@@ -87,7 +87,7 @@ void initialize() {
   // Configure your chassis controls
   chassis.toggle_modify_curve_with_controller(true); // Enables modifying the controller curve with buttons on the joysticks
   chassis.set_active_brake(0); // Sets the active brake kP. We recommend 0.1.
-  chassis.set_curve_default(2.5, 5.5); // Defaults for curve. If using tank, only the first parameter is used. (Comment this line out if you have an SD card!)  
+  chassis.set_curve_default(2.5, 7.5); // Defaults for curve. If using tank, only the first parameter is used. (Comment this line out if you have an SD card!)  
   default_constants(); // Set the drive to your own constants from autons.cpp!
   exit_condition_defaults(); // Set the exit conditions to your own constants from autons.cpp!
 
@@ -97,7 +97,11 @@ void initialize() {
 
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.add_autons({
-    Auton("Example Drive\n\nDrive forward and come back.", drive_example),
+    Auton("Six Ball PUSH.", SixBallOffensive),
+    Auton("Max shooting auton", HighScoringShooting),
+    Auton("AWP attempt", AWPattempt),
+
+    
   });
 
   // Initialize chassis and auton selector
@@ -180,6 +184,7 @@ void opcontrol() {
    chassis.set_drive_brake(MOTOR_BRAKE_COAST);
    uint32_t counterVar = 0; 
 
+    intakeActuate.set(true);
 
    //bool MatchLoadSpam = false;
 
@@ -189,31 +194,43 @@ void opcontrol() {
 
     //drive code using ez template
 
-    chassis.tank(); // Tank control for Will (match driver)
-    //chassis.arcade_standard(ez::SPLIT); // Standard split arcade for Sarah (skills driver)
+    //chassis.tank(); // Tank control for Will (match driver)
+    chassis.arcade_standard(ez::SPLIT); // Standard split arcade for Sarah (skills driver)
     
-
-    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN) && master.get_digital(pros::E_CONTROLLER_DIGITAL_B)){
-      RapidFire();
-      catapult_stop();
+     // When a new press is detected on R1, the catapult will override the reload task and move a little more, deactivting the slip gear and releases the catapult
+    // This also ensures if accidentally pressed while reloading, the catapult will continue to reload
+    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
+      catapult_fire();                                       //catapult_reload_limit_task(); // Reloads the catapult
       pros::Task Reload_Limit(catapult_reload_limit_task);
     }
 
-    else{
-    //catapult code
+    //if DOWN and B are pressed, then cata goes into nonstop, rapid-fire, mode
+    else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN) && master.get_digital(pros::E_CONTROLLER_DIGITAL_B)){
+      RapidFire();
+    }
+
+    //This is only used if rapid-fire is initiated
+    else if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)){
+    //restart catapult task
+    catapult_stop();
     TaskState(true);
+    pros::Task Reload_Limit(catapult_reload_limit_task);
+    }
+
+    else {
+      //do nothing
+    }
     
 
     // When a new press is detected on R1, the catapult will override the reload task and move a little more, deactivting the slip gear and releases the catapult
     // This also ensures if accidentally pressed while reloading, the catapult will continue to reload
-    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
+     if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
       catapult_fire();                                       //catapult_reload_limit_task(); // Reloads the catapult
       pros::Task Reload_Limit(catapult_reload_limit_task);
     } else {
       // catapult reload task is already running so it will automatically override the catapult_fire velocity of 0 after the void ends
     } 
 
-    }
 
     //printf("MatchLoadSpam: %d\n", MatchLoadSpam);
 
@@ -243,7 +260,7 @@ void opcontrol() {
     //WingL.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT));
     WingR.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y));
 
-    intakeActuate.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1));
+    intakeActuate.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X));
 
     pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }

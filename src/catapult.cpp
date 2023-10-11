@@ -51,7 +51,7 @@ void catapult_reload_limit_task(void* param) {
   while (runCata==true) {
     
     // of either catapult limits are pressed, stop the catapult, otherwise run the motor
-    printf("limit 1: %i\n", catapult_limit.get_value());
+    //printf("limit 1: %i\n", catapult_limit.get_value());
     if (catapult_limit.get_value() == 1) {  //(catapult_limit.get_value() == 0 || catapult_limit2.get_value() == 0)
       cata_move(0);
     } else {

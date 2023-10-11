@@ -21,3 +21,5 @@ void modified_exit_condition();
 
 //my autons
 void SixBallOffensive();
+void HighScoringShooting();
+void AWPattempt();

@@ -1,7 +1,11 @@
 #include "autons.hpp"
+#include "EZ-Template/drive/drive.hpp"
+#include "EZ-Template/util.hpp"
+#include "catapult.hpp"
 #include "intake.hpp"
 #include "main.h"
 #include "pistons.hpp"
+#include "pros/rtos.hpp"
 #include <set>
 
 
@@ -28,6 +32,16 @@ const int SWING_SPEED = 90;
 // If the objects are light or the cog doesn't change much, then there isn't a concern here.
 
 void default_constants() {
+  chassis.set_slew_min_power(80, 80);
+  chassis.set_slew_distance(7, 7);
+  chassis.set_pid_constants(&chassis.headingPID, 3, .005, 20, 0);
+  chassis.set_pid_constants(&chassis.forward_drivePID, 0.45, 0, 5, 0);
+  chassis.set_pid_constants(&chassis.backward_drivePID, 0.45, 0, 5, 0);
+  chassis.set_pid_constants(&chassis.turnPID, 4.5, 0.003, 27.5, 17.5);
+  chassis.set_pid_constants(&chassis.swingPID, 7, 0, 45, 0);
+}
+
+void OLDdefault_constants() {
   chassis.set_slew_min_power(80, 80);
   chassis.set_slew_distance(7, 7);
   chassis.set_pid_constants(&chassis.headingPID, 11, 0, 20, 0);
@@ -69,7 +83,7 @@ void modified_exit_condition() {
   chassis.set_exit_condition(chassis.drive_exit, 80, 50, 300, 150, 500, 500);
 }
 
-
+int counter = 0;
 
 ///
 // Drive Example
@@ -85,6 +99,11 @@ void drive_example() {
   chassis.wait_drive();
 
   chassis.set_drive_pid(-12, DRIVE_SPEED);
+  /*while(chassis.get_mode() == ez::DRIVE){
+  printf("%i,%i,%i,%i,%i\n", counter, chassis.right_sensor(), chassis.right_velocity(), chassis.left_sensor(), chassis.left_velocity() );
+  pros::delay(util::DELAY_TIME);
+  counter = counter + 20;
+  }*/
   chassis.wait_drive();
 
   chassis.set_drive_pid(-12, DRIVE_SPEED);
@@ -102,6 +121,11 @@ void turn_example() {
 
 
   chassis.set_turn_pid(90, TURN_SPEED);
+  /*while(counter <= 1500){
+  printf("%i,%i,%i,%i,%i,%f\n", counter, chassis.right_sensor(), -chassis.right_velocity(), -chassis.left_sensor(), chassis.left_velocity(), chassis.get_gyro() );
+  pros::delay(util::DELAY_TIME);
+  counter = counter + 20;
+  }*/
   chassis.wait_drive();
 
   chassis.set_turn_pid(45, TURN_SPEED);
@@ -256,96 +280,129 @@ void interfered_example() {
 void SixBallOffensive() {
   //basic initialization
   //pros::Task Reload_Limit(catapult_reload_limit_task);
-  intake_coast();
+  intakeHold();
   WingL.set(false);
   WingR.set(false);
   intakeActuate.set(false);
 
   //start of auton
-  //intakeActuate.set(true);
-  intake_in(6000);
+  intakeActuate.set(true);
+  intake_in(600);
 
   //drive to the first ball
-  chassis.set_drive_pid(2, DRIVE_SPEED, true);
+  chassis.set_drive_pid(3.5, DRIVE_SPEED, true);
   chassis.wait_drive();
 
   intake_stop();
 
   //backup toawrds matchloader
-  chassis.set_drive_pid(-24, DRIVE_SPEED, true);
+  chassis.set_drive_pid(-36, DRIVE_SPEED, true);
   chassis.wait_drive();
 
   //drive towards matchloader and sweep the matchload triball out
-  chassis.set_swing_pid(ez::RIGHT_SWING, 90, -TURN_SPEED);
+  chassis.set_swing_pid(ez::LEFT_SWING, -45, -TURN_SPEED);
   chassis.wait_drive();
 
+  WingL.set(true);
+
   //drive towards goals
-  chassis.set_drive_pid(14, DRIVE_SPEED, true);
+  chassis.set_drive_pid(-15, DRIVE_SPEED, true);
   chassis.wait_drive();
 
   //backup and repeat
-  chassis.set_drive_pid(-6, DRIVE_SPEED, true);
+  chassis.set_turn_pid(-100, TURN_SPEED);
   chassis.wait_drive();
 
-  chassis.set_drive_pid(7, DRIVE_SPEED, true);
+  WingL.set(false);
+
+  chassis.set_turn_pid(-75, TURN_SPEED);
+  chassis.wait_drive();
+
+  chassis.set_drive_pid(-18, DRIVE_SPEED, true);
   chassis.wait_drive();
 
   //backup and turn towards triball near the post
-  chassis.set_drive_pid(-4, DRIVE_SPEED, true);
+  chassis.set_drive_pid(8, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  chassis.set_turn_pid(0, TURN_SPEED);
+  chassis.set_turn_pid(2, TURN_SPEED);
   chassis.wait_drive();
 
-  intake_in(6000);
+  chassis.set_drive_pid(20, DRIVE_SPEED, true);
+  chassis.wait_drive();
+  
+  intake_coast();
+
+  chassis.set_turn_pid(120, TURN_SPEED);
+  chassis.wait_drive();
+
+  intake_out(300);
+
+  pros::delay(250);
+
+  intake_stop();
+
+  chassis.set_turn_pid(23, TURN_SPEED);
+  chassis.wait_drive();
+
+  intake_hold();
+
+  intake_in(350);
 
   //drive towards triball
-  chassis.set_drive_pid(44, DRIVE_SPEED, true);
+  chassis.set_drive_pid(27, DRIVE_SPEED, true);
   chassis.wait_drive();
 
   intake_stop();
 
   //backup, turn towards goal, and out take
-  chassis.set_drive_pid(-4, DRIVE_SPEED, true);
+  chassis.set_drive_pid(-6, DRIVE_SPEED, true);
   chassis.wait_drive();
+
+  intake_coast();
 
   chassis.set_turn_pid(145, TURN_SPEED);
   chassis.wait_drive();
 
-  intake_out(12000);
+  intake_out(500);
+
+  pros::delay(250);
 
   //turn towards middle triball
-  chassis.set_turn_pid(90, TURN_SPEED);
+  chassis.set_turn_pid(75, TURN_SPEED);
   chassis.wait_drive();
 
-  //drive towards middle triball while intaking
-  intake_in(8000);
+  intakeHold();
 
-  chassis.set_drive_pid(24, DRIVE_SPEED, true);
+
+  //drive towards middle triball while intaking
+  intake_in(350);
+
+  chassis.set_drive_pid(27, DRIVE_SPEED, true);
   chassis.wait_drive();
 
   intake_stop();
 
   //turn towards goal and sweep other triballs in
-  chassis.set_turn_pid(180, TURN_SPEED);
+  chassis.set_turn_pid(185, TURN_SPEED);
+
+  intake_coast();
+
   chassis.wait_drive();
 
   WingL.set(true);
   WingR.set(true);
 
-  intake_out(12000);
+  intake_out(600);
 
-  chassis.set_drive_pid(34, DRIVE_SPEED, true);
+  chassis.set_drive_pid(32, DRIVE_SPEED, true);
+  pros::delay(200);
+  intakeActuate.set(false);
   chassis.wait_drive();
 
   //go back and forth to knock triballs in
-  chassis.set_drive_pid(-8, DRIVE_SPEED, true);
-  chassis.wait_drive();
 
-  chassis.set_drive_pid(10, DRIVE_SPEED, true);
-  chassis.wait_drive();
-
-  chassis.set_drive_pid(-2, DRIVE_SPEED, true);
+  chassis.set_drive_pid(-6, DRIVE_SPEED, true);
   chassis.wait_drive();
 
   intake_stop();
@@ -356,7 +413,7 @@ void SixBallOffensive() {
 
 }
 
-void FiveBallShooting(){
+void HighScoringShooting(){
 
   //basic initialization
   //pros::Task Reload_Limit(catapult_reload_limit_task);
@@ -366,6 +423,61 @@ void FiveBallShooting(){
   intakeActuate.set(false);
 
   //start of auton
-  
+  intakeActuate.set(true);    
+  intake_in(400);    //outtake immediately to get rid of preloaded alliance ball
+
+  chassis.set_drive_pid(45, DRIVE_SPEED, true);  //drive about 2/5 the way there
+  chassis.wait_drive();
+
+  pros::delay(400);
+
+  chassis.set_drive_pid(-10, 50, true); //reverse to avoid getting entangled
+  chassis.wait_drive();
+
+  intake_stop(); //stop intaking
+
+  chassis.set_turn_pid(-115, 60); //turn towards the goal
+  chassis.wait_drive();
+
+  pros::delay(250); //let triball settle
+
+  catapult_fire(); //HOPEFULLY fire into goal
+
+  pros::Task Reload_Limit(catapult_reload_limit_task); //start reloading catapult
+
+  chassis.set_swing_pid(ez::RIGHT_SWING, 37, TURN_SPEED);
+  chassis.wait_drive();
+
+  intake_in(450);
+
+  chassis.set_drive_pid(21, DRIVE_SPEED, true); //drive towards the triball
+  chassis.wait_drive();
+
+  pros::delay(100);  //make sure to pick it up
+
+  chassis.set_drive_pid(-12, DRIVE_SPEED, true); //reverse to avoid getting entangled
+  chassis.wait_drive();
+
+  pros::delay(200);
+
+  intake_stop(); //stop intaking 
+
+  chassis.set_turn_pid(-112, 70); //turn towards the goal
+  chassis.wait_drive();
+
+  pros::delay(250);
+
+  catapult_fire(); //HOPEFULLY fire into goal
+
+  intake_in(400);
+
+  chassis.set_turn_pid(-165, DRIVE_SPEED); //turn towards pole
+  chassis.wait_drive();
+
+  chassis.set_drive_pid(35, DRIVE_SPEED, true); //drive towards pole
+  chassis.wait_drive();
+}
+
+void AWPattempt(){
 
 }
