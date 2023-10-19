@@ -11,3 +11,5 @@
 inline PistonGroup WingR('F', false);
 inline PistonGroup WingL('D', false);
 inline PistonGroup intakeActuate('A', false);
+inline PistonGroup lowHang('E', false);
+

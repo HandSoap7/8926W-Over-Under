@@ -23,3 +23,4 @@ void modified_exit_condition();
 void SixBallOffensive();
 void HighScoringShooting();
 void AWPattempt();
+void Auton_Skills();

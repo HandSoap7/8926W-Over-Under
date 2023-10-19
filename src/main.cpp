@@ -1,4 +1,5 @@
 #include "main.h"
+#include "EZ-Template/auton.hpp"
 #include "EZ-Template/util.hpp"
 #include "autons.hpp"
 #include "display/lv_objx/lv_btnm.h"
@@ -10,6 +11,7 @@
 #include "pros/misc.h"
 #include "pros/misc.hpp"
 #include "pros/rtos.hpp"
+#include <algorithm>
 #include <sys/types.h>
 
 /////
@@ -98,9 +100,9 @@ void initialize() {
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.add_autons({
     Auton("Six Ball PUSH.", SixBallOffensive),
-    Auton("Max shooting auton", HighScoringShooting),
     Auton("AWP attempt", AWPattempt),
-
+    Auton("Max shooting auton", HighScoringShooting),
+    Auton("Auton Skills goes crazy", Auton_Skills),
     
   });
 
@@ -194,9 +196,10 @@ void opcontrol() {
 
     //drive code using ez template
 
-    //chassis.tank(); // Tank control for Will (match driver)
-    chassis.arcade_standard(ez::SPLIT); // Standard split arcade for Sarah (skills driver)
-    
+    chassis.tank(); // Tank control for Will (match driver)
+    //chassis.arcade_standard(ez::SPLIT); // Standard split arcade for Sarah (skills driver)
+
+    /*
      // When a new press is detected on R1, the catapult will override the reload task and move a little more, deactivting the slip gear and releases the catapult
     // This also ensures if accidentally pressed while reloading, the catapult will continue to reload
     if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
@@ -220,18 +223,7 @@ void opcontrol() {
     else {
       //do nothing
     }
-    
-
-    // When a new press is detected on R1, the catapult will override the reload task and move a little more, deactivting the slip gear and releases the catapult
-    // This also ensures if accidentally pressed while reloading, the catapult will continue to reload
-     if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
-      catapult_fire();                                       //catapult_reload_limit_task(); // Reloads the catapult
-      pros::Task Reload_Limit(catapult_reload_limit_task);
-    } else {
-      // catapult reload task is already running so it will automatically override the catapult_fire velocity of 0 after the void ends
-    } 
-
-
+    */
     //printf("MatchLoadSpam: %d\n", MatchLoadSpam);
 
 
@@ -261,6 +253,8 @@ void opcontrol() {
     WingR.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y));
 
     intakeActuate.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X));
+
+    lowHang.button(master.get_digital(pros::E_CONTROLLER_DIGITAL_A) && master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT));
 
     pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }

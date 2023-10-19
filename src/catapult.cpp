@@ -1,6 +1,8 @@
 
 #include "catapult.hpp"
+#include "EZ-Template/util.hpp"
 #include "pros/adi.hpp"
+#include "pros/misc.h"
 #include "pros/motors.h"
 #include "pros/rotation.hpp"
 #include "pros/rtos.h"
@@ -36,11 +38,15 @@ void catapult_reload_rotation_task(void* param) {
   }
 }
 
-
+bool AutonOverride = false;
 bool runCata = true;
 
 void TaskState(bool State){
   runCata = State;
+}
+
+void ManualOverride(bool state){
+  AutonOverride = state;
 }
 
 //catapult reload task using limit switches
@@ -49,15 +55,27 @@ void catapult_reload_limit_task(void* param) {
  // printf("catapult_reload_limit_task\n");
  catapult.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
   while (runCata==true) {
-    
+
+    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)){
+      cata_move(12000);
+    }
+    else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN) && master.get_digital(pros::E_CONTROLLER_DIGITAL_B)){
+      cata_move(12000);
+    }
+    else if(AutonOverride == true){
+      cata_move(12000);
+    }
+    else{
+    cata_move(0);
     // of either catapult limits are pressed, stop the catapult, otherwise run the motor
     //printf("limit 1: %i\n", catapult_limit.get_value());
-    if (catapult_limit.get_value() == 1) {  //(catapult_limit.get_value() == 0 || catapult_limit2.get_value() == 0)
+    /*if (catapult_limit.get_value() == 1) {  //(catapult_limit.get_value() == 0 || catapult_limit2.get_value() == 0)
       cata_move(0);
     } else {
       cata_move(12000);
+    }*/
     }
-    pros::delay(50);
+    pros::delay(20);
 
     //printf(runCata ? "true\n" : "false\n")
     
@@ -84,9 +102,7 @@ void catapult_fire() {
 }
 
 void RapidFire(){
-  runCata = false;
   cata_move(12000);
-    runCata=true;
 }
 
 
