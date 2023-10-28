@@ -35,8 +35,8 @@ void default_constants() {
   chassis.set_slew_min_power(80, 80);
   chassis.set_slew_distance(7, 7);
   chassis.set_pid_constants(&chassis.headingPID, 3, .005, 20, 0);
-  chassis.set_pid_constants(&chassis.forward_drivePID, 0.45, 0, 5, 0);
-  chassis.set_pid_constants(&chassis.backward_drivePID, 0.45, 0, 5, 0);
+  chassis.set_pid_constants(&chassis.forward_drivePID, 0.50, 0, 5, 0);
+  chassis.set_pid_constants(&chassis.backward_drivePID, 0.50, 0, 5, 0);
   chassis.set_pid_constants(&chassis.turnPID, 4.5, 0.003, 27.5, 17.5);
   chassis.set_pid_constants(&chassis.swingPID, 7, 0, 45, 0);
 }
@@ -324,10 +324,10 @@ void SixBallOffensive() {
   chassis.wait_drive();
 
   //backup and turn towards triball near the post
-  chassis.set_drive_pid(8, DRIVE_SPEED, true);
+  chassis.set_drive_pid(7, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  chassis.set_turn_pid(2, TURN_SPEED);
+  chassis.set_turn_pid(4, TURN_SPEED);
   chassis.wait_drive();
 
   chassis.set_drive_pid(24, DRIVE_SPEED, true);
@@ -335,12 +335,12 @@ void SixBallOffensive() {
   
   intake_coast();
 
-  chassis.set_turn_pid(135, TURN_SPEED);
+  chassis.set_turn_pid(130, TURN_SPEED);
   chassis.wait_drive();
 
   intake_out(250);
 
-  pros::delay(250);
+  pros::delay(300);
 
   intake_stop();
 
@@ -369,9 +369,9 @@ void SixBallOffensive() {
   chassis.set_drive_pid(24, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  intake_out(350);
+  intake_out(300);
 
-  pros::delay(100);
+  pros::delay(150);
 
   chassis.set_drive_pid(-18, DRIVE_SPEED, true);
   chassis.wait_drive();
@@ -430,70 +430,80 @@ void SixBallOffensive() {
 }
 
 void HighScoringShooting(){
-
-  //basic initialization
-  //pros::Task Reload_Limit(catapult_reload_limit_task);
   intake_coast();
   WingL.set(false);
   WingR.set(false);
   intakeActuate.set(false);
+  TaskState(true);
 
-  //start of auton
-  intakeActuate.set(true);    
-  intake_in(450);    //outtake immediately to get rid of preloaded alliance ball
+  intakeActuate.set(true);
+  WingR.set(true);
 
-  chassis.set_drive_pid(46, DRIVE_SPEED, true);  //drive about 2/5 the way there
+  intake_in(500);
+  pros::delay(200);
+
+  WingR.set(false);
+
+  chassis.set_drive_pid(47, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  pros::delay(400);
-
-  chassis.set_drive_pid(-10, 50, true); //reverse to avoid getting entangled
+  chassis.set_drive_pid(-5, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  intake_stop(); //stop intaking
+  intake_stop();
 
-  chassis.set_turn_pid(-115, 60); //turn towards the goal
+  chassis.set_turn_pid(82, TURN_SPEED);
   chassis.wait_drive();
 
-  pros::delay(250); //let triball settle
+  chassis.set_drive_pid(20, DRIVE_SPEED, true);
+  chassis.wait_until(11);
 
-
-  ManualOverride(true);
-  pros::delay(400);
-  ManualOverride(false);
-
-  chassis.set_swing_pid(ez::RIGHT_SWING, 0, TURN_SPEED);
-  chassis.wait_drive();
-
-  intake_in(450);
-
-  chassis.set_drive_pid(21, DRIVE_SPEED, true); //drive towards the triball
-  chassis.wait_drive();
-
-  pros::delay(100);  //make sure to pick it up
-
-  chassis.set_drive_pid(-12, DRIVE_SPEED, true); //reverse to avoid getting entangled
-  chassis.wait_drive();
+  //reset imu to 0 heading
+  // chassis.reset_gyro(0);
 
   pros::delay(200);
 
-  intake_stop(); //stop intaking 
+  WingL.set(true);
 
-  chassis.set_turn_pid(-112, 70); //turn towards the goal
+  pros::delay(300);
+
+  WingL.set(false);
+
+  chassis.set_swing_pid(LEFT_SWING, 37, -DRIVE_SPEED);
   chassis.wait_drive();
 
-  pros::delay(250);
-
-  ManualOverride(true);
-  pros::delay(400);
-  ManualOverride(false);
-
-  intake_in(400);
-
-  chassis.set_turn_pid(-165, DRIVE_SPEED); //turn towards pole
+  chassis.set_drive_pid(-48, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  chassis.set_drive_pid(35, DRIVE_SPEED, true); //drive towards pole
+  chassis.set_turn_pid(130, TURN_SPEED);
+  chassis.wait_drive();
+
+  chassis.set_drive_pid(-8, DRIVE_SPEED, true);
+  chassis.wait_drive();
+
+  chassis.set_swing_pid(RIGHT_SWING, 165, -DRIVE_SPEED);
+  chassis.wait_drive();
+
+  chassis.set_drive_pid(10, DRIVE_SPEED, true);
+  chassis.wait_drive();
+
+  chassis.set_swing_pid(RIGHT_SWING, 130, DRIVE_SPEED);
+  chassis.wait_drive();
+
+  WingR.set(true);
+
+  chassis.set_drive_pid(6, DRIVE_SPEED, true);
+  chassis.wait_drive();
+
+  chassis.set_swing_pid(RIGHT_SWING, 85, DRIVE_SPEED);
+  chassis.wait_drive();
+
+
+
+  chassis.set_drive_pid(36.5, 120);
+  pros::delay(300);
+  WingR.set(false);
+  intake_out(600);
   chassis.wait_drive();
 }
 
@@ -524,7 +534,7 @@ void AWPattempt(){
   chassis.wait_drive();
 
   chassis.set_drive_pid(20, DRIVE_SPEED, true);
-  chassis.wait_until(15);
+  chassis.wait_until(12);
 
   //reset imu to 0 heading
   // chassis.reset_gyro(0);
@@ -533,7 +543,7 @@ void AWPattempt(){
 
   WingL.set(true);
 
-  pros::delay(200);
+  pros::delay(300);
 
   WingL.set(false);
 
@@ -552,8 +562,8 @@ void AWPattempt(){
   chassis.set_swing_pid(RIGHT_SWING, 165, -DRIVE_SPEED);
   chassis.wait_drive();
 
-  chassis.set_drive_pid(-7, DRIVE_SPEED, true);
-  chassis.wait_drive();
+  chassis.set_drive_pid(-15, DRIVE_SPEED, true);
+  chassis.wait_until(-5);
 
   chassis.set_drive_pid(18, DRIVE_SPEED, true);
   chassis.wait_drive();
@@ -566,12 +576,12 @@ void AWPattempt(){
   chassis.set_drive_pid(4, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  chassis.set_swing_pid(RIGHT_SWING, 85, DRIVE_SPEED);
+  chassis.set_swing_pid(RIGHT_SWING, 88, DRIVE_SPEED);
   chassis.wait_drive();
 
 
 
-  chassis.set_drive_pid(36.5, 120);
+  chassis.set_drive_pid(35.5, 120);
   pros::delay(300);
   WingR.set(false);
   intake_out(600);
@@ -589,9 +599,9 @@ void Auton_Skills(){
 
 
   cata_move(12000);
-  pros::delay(1000); //30000
+  pros::delay(30000); //30000
   intake_out(200);
-  pros::delay(1000); //4000 msec
+  pros::delay(4000); //4000 msec
   intake_in(400);
   pros::delay(1000);
 
