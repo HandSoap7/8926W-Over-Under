@@ -8,6 +8,116 @@
 #include "pros/rtos.hpp"
 #include <set>
 
+//LEM
+#include "lemlib/api.hpp"
+
+
+
+
+
+
+// LEM LIBRARY
+
+//Drive motors
+pros::Motor left_front_motor(1, pros::E_MOTOR_GEARSET_06, false); // port 1, blue gearbox, not reversed
+pros::Motor left_middle_motor(2, pros::E_MOTOR_GEARSET_06, false); // port 2, blue gearbox, not reversed
+pros::Motor left_back_motor(3, pros::E_MOTOR_GEARSET_06, false); // port 3, blue gearbox, not reversed
+pros::Motor right_front_motor(4, pros::E_MOTOR_GEARSET_06, true); // port 4, blue gearbox, reversed
+pros::Motor right_middle_motor(3, pros::E_MOTOR_GEARSET_06, true); // port 3, blue gearbox, reversed
+pros::Motor right_back_motor(4, pros::E_MOTOR_GEARSET_06, true); // port 4, blue gearbox, reversed
+
+
+// Motor groups
+pros::MotorGroup LeftyMotors({left_front_motor, left_back_motor});
+pros::MotorGroup RightyMotors({right_front_motor, right_back_motor});
+
+
+//Drivetrain constructor
+lemlib::Drivetrain_t drivetrain {
+    &LeftyMotors, // left drivetrain motors
+    &RightyMotors, // right drivetrain motors
+    10, // track width
+    2.75, // wheel diameter
+    450 // wheel rpm
+};
+
+
+//Future ODOM
+pros::Rotation rot1(21, false); // 
+pros::Rotation rot2(21, false); // 
+
+// uses "enc" as the encoder. 2.75" wheel diameter, 4.3" offset from tracking center, 1:1 gear ratio
+lemlib::TrackingWheel Horizontal_tracking(&rot1, 2.75, 4.3, 1);
+// uses "enc" as the encoder. 2.75" wheel diameter, 4.3" offset from tracking center, 1:1 gear ratio
+lemlib::TrackingWheel Vertical_tracking(&rot2, 2.75, 4.3, 1);
+
+// inertial sensor
+pros::Imu Inertial_sensy(21); // port 2
+ 
+// odometry struct
+lemlib::OdomSensors_t sensors {
+    &Horizontal_tracking, // horizontal tracking wheel
+    nullptr, // we don't have a second tracking wheel, so we set it to nullptr
+    &Vertical_tracking, // vertical tracking wheel
+    nullptr, // we don't have a second tracking wheel, so we set it to nullptr
+    &Inertial_sensy // inertial sensor
+};
+
+
+// forward/backward PID
+lemlib::ChassisController_t lateralController {
+    8, // kP
+    30, // kD
+    1, // smallErrorRange
+    100, // smallErrorTimeout
+    3, // largeErrorRange
+    500, // largeErrorTimeout
+    5 // slew rate
+};
+ 
+// turning PID
+lemlib::ChassisController_t angularController {
+    4, // kP
+    40, // kD
+    1, // smallErrorRange
+    100, // smallErrorTimeout
+    3, // largeErrorRange
+    500, // largeErrorTimeout
+    0 // slew rate
+};
+
+
+
+
+// create the chassis
+lemlib::Chassis LemChassis(drivetrain, lateralController, angularController, sensors);
+
+
+
+
+void LemCalibrate(){
+    LemChassis.calibrate();
+}
+
+
+
+//Screen for printing odom values
+
+void LemScreen() {
+    // loop forever
+    while (true) {
+        lemlib::Pose pose = LemChassis.getPose(); // get the current position of the robot
+        pros::lcd::print(0, "x: %f", pose.x); // print the x position
+        pros::lcd::print(1, "y: %f", pose.y); // print the y position
+        pros::lcd::print(2, "heading: %f", pose.theta); // print the heading
+        pros::delay(10);
+    }
+}
+
+
+
+
+
 
 /////
 // For instalattion, upgrading, documentations and tutorials, check out website!
@@ -84,152 +194,6 @@ void modified_exit_condition() {
 }
 
 int counter = 0;
-
-///
-// Drive Example
-///
-void drive_example() {
-  // The first parameter is target inches
-  // The second parameter is max speed the robot will drive at
-  // The third parameter is a boolean (true or false) for enabling/disabling a slew at the start of drive motions
-  // for slew, only enable it when the drive distance is greater then the slew distance + a few inches
-
-
-  chassis.set_drive_pid(24, DRIVE_SPEED, true);
-  chassis.wait_drive();
-
-  chassis.set_drive_pid(-12, DRIVE_SPEED);
-  while(chassis.get_mode() == ez::DRIVE){
-  printf("%i,%i,%i,%i,%i\n", counter, chassis.right_sensor(), chassis.right_velocity(), chassis.left_sensor(), chassis.left_velocity() );
-  pros::delay(util::DELAY_TIME);
-  counter = counter + 20;
-  }
-  chassis.wait_drive();
-
-  chassis.set_drive_pid(-12, DRIVE_SPEED);
-  chassis.wait_drive();
-}
-
-
-
-///
-// Turn Example
-///
-void turn_example() {
-  // The first parameter is target degrees
-  // The second parameter is max speed the robot will drive at
-
-
-  chassis.set_turn_pid(90, TURN_SPEED);
-  /*while(counter <= 1500){
-  printf("%i,%i,%i,%i,%i,%f\n", counter, chassis.right_sensor(), -chassis.right_velocity(), -chassis.left_sensor(), chassis.left_velocity(), chassis.get_gyro() );
-  pros::delay(util::DELAY_TIME);
-  counter = counter + 20;
-  }*/
-  chassis.wait_drive();
-
-  chassis.set_turn_pid(45, TURN_SPEED);
-  chassis.wait_drive();
-
-  chassis.set_turn_pid(0, TURN_SPEED);
-  chassis.wait_drive();
-}
-
-
-
-///
-// Combining Turn + Drive
-///
-void drive_and_turn() {
-  chassis.set_drive_pid(24, DRIVE_SPEED, true);
-  chassis.wait_drive();
-
-  chassis.set_turn_pid(45, TURN_SPEED);
-  chassis.wait_drive();
-
-  chassis.set_turn_pid(-45, TURN_SPEED);
-  chassis.wait_drive();
-
-  chassis.set_turn_pid(0, TURN_SPEED);
-  chassis.wait_drive();
-
-  chassis.set_drive_pid(-24, DRIVE_SPEED, true);
-  chassis.wait_drive();
-}
-
-
-
-///
-// Wait Until and Changing Max Speed
-///
-void wait_until_change_speed() {
-  // wait_until will wait until the robot gets to a desired position
-
-
-  // When the robot gets to 6 inches, the robot will travel the remaining distance at a max speed of 40
-  chassis.set_drive_pid(24, DRIVE_SPEED, true);
-  chassis.wait_until(6);
-  chassis.set_max_speed(40); // After driving 6 inches at DRIVE_SPEED, the robot will go the remaining distance at 40 speed
-  chassis.wait_drive();
-
-  chassis.set_turn_pid(45, TURN_SPEED);
-  chassis.wait_drive();
-
-  chassis.set_turn_pid(-45, TURN_SPEED);
-  chassis.wait_drive();
-
-  chassis.set_turn_pid(0, TURN_SPEED);
-  chassis.wait_drive();
-
-  // When the robot gets to -6 inches, the robot will travel the remaining distance at a max speed of 40
-  chassis.set_drive_pid(-24, DRIVE_SPEED, true);
-  chassis.wait_until(-6);
-  chassis.set_max_speed(40); // After driving 6 inches at DRIVE_SPEED, the robot will go the remaining distance at 40 speed
-  chassis.wait_drive();
-}
-
-
-
-///
-// Swing Example
-///
-void swing_example() {
-  // The first parameter is ez::LEFT_SWING or ez::RIGHT_SWING
-  // The second parameter is target degrees
-  // The third parameter is speed of the moving side of the drive
-
-
-  chassis.set_swing_pid(ez::LEFT_SWING, 45, SWING_SPEED);
-  chassis.wait_drive();
-
-  chassis.set_drive_pid(24, DRIVE_SPEED, true);
-  chassis.wait_until(12);
-
-  chassis.set_swing_pid(ez::RIGHT_SWING, 0, SWING_SPEED);
-  chassis.wait_drive();
-}
-
-
-
-///
-// Auto that tests everything
-///
-void combining_movements() {
-  chassis.set_drive_pid(24, DRIVE_SPEED, true);
-  chassis.wait_drive();
-
-  chassis.set_turn_pid(45, TURN_SPEED);
-  chassis.wait_drive();
-
-  chassis.set_swing_pid(ez::RIGHT_SWING, -45, TURN_SPEED);
-  chassis.wait_drive();
-
-  chassis.set_turn_pid(0, TURN_SPEED);
-  chassis.wait_drive();
-
-  chassis.set_drive_pid(-24, DRIVE_SPEED, true);
-  chassis.wait_drive();
-}
 
 
 
@@ -427,84 +391,6 @@ void SixBallOffensive() {
   WingL.set(false);
   WingR.set(false);
 
-}
-
-void HighScoringShooting(){
-  intake_coast();
-  WingL.set(false);
-  WingR.set(false);
-  intakeActuate.set(false);
-  TaskState(true);
-
-  intakeActuate.set(true);
-  WingR.set(true);
-
-  intake_in(500);
-  pros::delay(200);
-
-  WingR.set(false);
-
-  chassis.set_drive_pid(47, DRIVE_SPEED, true);
-  chassis.wait_drive();
-
-  chassis.set_drive_pid(-5, DRIVE_SPEED, true);
-  chassis.wait_drive();
-
-  intake_stop();
-
-  chassis.set_turn_pid(82, TURN_SPEED);
-  chassis.wait_drive();
-
-  chassis.set_drive_pid(20, DRIVE_SPEED, true);
-  chassis.wait_until(11);
-
-  //reset imu to 0 heading
-  // chassis.reset_gyro(0);
-
-  pros::delay(200);
-
-  WingL.set(true);
-
-  pros::delay(300);
-
-  WingL.set(false);
-
-  chassis.set_swing_pid(LEFT_SWING, 37, -DRIVE_SPEED);
-  chassis.wait_drive();
-
-  chassis.set_drive_pid(-48, DRIVE_SPEED, true);
-  chassis.wait_drive();
-
-  chassis.set_turn_pid(130, TURN_SPEED);
-  chassis.wait_drive();
-
-  chassis.set_drive_pid(-8, DRIVE_SPEED, true);
-  chassis.wait_drive();
-
-  chassis.set_swing_pid(RIGHT_SWING, 165, -DRIVE_SPEED);
-  chassis.wait_drive();
-
-  chassis.set_drive_pid(10, DRIVE_SPEED, true);
-  chassis.wait_drive();
-
-  chassis.set_swing_pid(RIGHT_SWING, 130, DRIVE_SPEED);
-  chassis.wait_drive();
-
-  WingR.set(true);
-
-  chassis.set_drive_pid(6, DRIVE_SPEED, true);
-  chassis.wait_drive();
-
-  chassis.set_swing_pid(RIGHT_SWING, 85, DRIVE_SPEED);
-  chassis.wait_drive();
-
-
-
-  chassis.set_drive_pid(36.5, 120);
-  pros::delay(300);
-  WingR.set(false);
-  intake_out(600);
-  chassis.wait_drive();
 }
 
 void AWPattempt(){
@@ -730,4 +616,22 @@ void Auton_Skills(){
 
   WingR.set(false);
   WingL.set(false);
+}
+
+void LemTest(){
+
+  //Basic start of LEM auton
+
+  pros::lcd::initialize(); // initialize brain screen
+  pros::Task screenTask(LemScreen); // create a task to print the position to the screen
+
+
+  LemChassis.setPose(5.2, 10.333, 87); // X: 5.2, Y: 10.333, Heading: 87
+
+  ////////////////////////////////////////////////////////////////////////////////////////
+
+  LemChassis.moveTo(10, 0, 1000, 50); // move to the point (10, 0) with a timeout of 1000 ms, and a maximum speed of 50
+
+  LemChassis.turnTo(10, 0, 1000, false, 50); // turn to the point (10, 0) with a timeout of 1000 ms, and a maximum speed of 50
+
 }

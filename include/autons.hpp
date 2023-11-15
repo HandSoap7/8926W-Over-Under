@@ -21,6 +21,9 @@ void modified_exit_condition();
 
 //my autons
 void SixBallOffensive();
-void HighScoringShooting();
 void AWPattempt();
 void Auton_Skills();
+
+//LEM library
+void LemScreen();
+void LemCalibrate();

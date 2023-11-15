@@ -6,6 +6,7 @@
 #include "display/lv_objx/lv_imgbtn.h"
 #include "catapult.hpp"
 #include "intake.hpp"
+#include "lemlib/chassis/chassis.hpp"
 #include "pistons.hpp"
 #include "pros/adi.h"
 #include "pros/misc.h"
@@ -13,6 +14,8 @@
 #include "pros/rtos.hpp"
 #include <algorithm>
 #include <sys/types.h>
+#include "lemlib/api.hpp"
+
 
 /////
 // For instalattion, upgrading, documentations and tutorials, check out website!
@@ -72,8 +75,9 @@ Drive chassis (
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-  // Print our branding over your terminal :D
-  ez::print_ez_template();
+  // initialize brain screen
+  //pros::lcd::initialize(); // initialize brain screen
+  //pros::Task screenTask(LemScreen); // create a task to print the position to the screen
 
   // Initialize the catapult
   
@@ -82,8 +86,8 @@ void initialize() {
 
 
   // Start the catapult reload tasks
-  //pros::Task Reload_Rotation(catapult_reload_rotation_task);
-  pros::Task Reload_Limit(catapult_reload_limit_task);
+  pros::Task Reload_Rotation(catapult_reload_rotation_task);
+  //pros::Task Reload_Limit(catapult_reload_limit_task);
 
 
   // Configure your chassis controls
@@ -101,12 +105,12 @@ void initialize() {
   ez::as::auton_selector.add_autons({
     Auton("Six Ball PUSH.", SixBallOffensive),
     Auton("AWP attempt", AWPattempt),
-    Auton("Max shooting auton", HighScoringShooting),
     Auton("Auton Skills goes crazy", Auton_Skills),
     
   });
 
   // Initialize chassis and auton selector
+  LemCalibrate(); // calibrate the chassis
   chassis.initialize();
   ez::as::initialize();
 }
