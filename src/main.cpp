@@ -17,6 +17,8 @@
 #include "lemlib/api.hpp"
 
 
+//#include "lemlib/api.hpp"
+
 /////
 // For instalattion, upgrading, documentations and tutorials, check out website!
 // https://ez-robotics.github.io/EZ-Template/
@@ -27,14 +29,14 @@
 Drive chassis (
   // Left Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  {-10,-8,9}
+  {-7,-8,-17}
 
   // Right Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  ,{13,-16,18}
+  ,{1,3,16}
 
   // IMU Port
-  ,21
+  ,15
 
   // Wheel Diameter (Remember, 4" wheels are actually 4.125!)
   //    (or tracking wheel diameter)
@@ -188,9 +190,8 @@ void opcontrol() {
   // This is preference to what you like to drive on.
   // We use coast because it increases the time before motor burnout
    chassis.set_drive_brake(MOTOR_BRAKE_COAST);
+   
    uint32_t counterVar = 0; 
-
-    intakeActuate.set(true);
 
    //bool MatchLoadSpam = false;
 
@@ -200,8 +201,8 @@ void opcontrol() {
 
     //drive code using ez template
 
-    chassis.tank(); // Tank control for Will (match driver)
-    //chassis.arcade_standard(ez::SPLIT); // Standard split arcade for Sarah (skills driver)
+    //chassis.tank(); // Tank control for Will (match driver)
+    chassis.arcade_standard(ez::SPLIT); // Standard split arcade for Sarah (skills driver)
 
     /*
      // When a new press is detected on R1, the catapult will override the reload task and move a little more, deactivting the slip gear and releases the catapult
@@ -256,9 +257,7 @@ void opcontrol() {
     //WingL.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT));
     WingR.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y));
 
-    intakeActuate.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X));
-
-    lowHang.button(master.get_digital(pros::E_CONTROLLER_DIGITAL_A) && master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT));
+    Blocker.button(master.get_digital(pros::E_CONTROLLER_DIGITAL_A) && master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT));
 
     pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }

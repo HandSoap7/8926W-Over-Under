@@ -10,7 +10,7 @@
 
 
 //catapult motor, limit switches, and rotation sensor ports
-pros::Motor catapult(7, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
+pros::Motor catapult(9, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
 
 
 // Recognizes the type of value (digital(0/1) or analog(0-127)), the name in the code, and the port on the brain
