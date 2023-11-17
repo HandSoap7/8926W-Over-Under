@@ -20,36 +20,84 @@ pros::ADIDigitalIn catapult_limit('G');
 //pros::ADIDigitalIn catapult_limit2('H');
 
 // Recognizes the type of sensor, the name in the code, and the port on the brain
-pros::Rotation catapult_rotation(10);
+pros::Rotation catapult_rotation(2);
 
 
 void cata_move(int voltage){
   catapult.move_voltage(voltage);
 }
 
+
+
+bool ManualOverride = false;
+bool FastFire = false;
+int CataStopDegree = 12000;
+int IntakeBlockDegree = 12000;
+int HangStopDegree = 12000;
+int UsuableStopDegree = IntakeBlockDegree;
+
+void FastFireState(bool state){
+FastFire = state;
+}
+
+void ManualOverrideState(bool state){
+ManualOverride = state;
+}
+
+void SetStopDegree(int State){
+
+if (State == 1){
+UsuableStopDegree = IntakeBlockDegree;
+}
+else if(State == 2){
+UsuableStopDegree = CataStopDegree;
+}
+else if(State == 3){
+UsuableStopDegree = HangStopDegree;
+}
+else{
+}
+
+}
+
+
+
 //catapult reload task using rotation sensor
 //catapult stops at a certain degree (200) and if it's below the degree it will run the motor
 void catapult_reload_rotation_task(void* param) {
-  while (1==1) {
-    if (catapult_rotation.get_angle() <= 20000) { // 20000 is the desired centidegree 
+  while (ManualOverride==false) {
+    //printf("Stop Degree is %i /n", UsuableStopDegree);
+
+    if (FastFire==false){
       cata_move(12000);
-    } else {
-      cata_move(0);
-    }
-    pros::delay(20);
+      }
+    else{
+      //Hard stop Degree is around 10100 millidegrees, The stop degree is atleast 10000 millidegrees
+      if (catapult_rotation.get_angle() <= UsuableStopDegree) { // 20000 is the desired centidegree 
+        cata_move(12000);
+      } 
+      else {
+        cata_move(0);
+      }
+
+      }
+    pros::delay(75);
   }
 }
 
-bool AutonOverride = false;
 bool runCata = true;
 
 void TaskState(bool State){
   runCata = State;
 }
 
-void ManualOverride(bool state){
-  AutonOverride = state;
-}
+
+/*
+bool AutonOverride = false;
+
+
+
+
 
 //catapult reload task using limit switches
 //catapult stops when either limit switch is pressed and if neither are pressed it will run the motor
@@ -71,11 +119,11 @@ void catapult_reload_limit_task(void* param) {
     cata_move(0);
     // of either catapult limits are pressed, stop the catapult, otherwise run the motor
     //printf("limit 1: %i\n", catapult_limit.get_value());
-    /*if (catapult_limit.get_value() == 1) {  //(catapult_limit.get_value() == 0 || catapult_limit2.get_value() == 0)
+    if (catapult_limit.get_value() == 1) {  //(catapult_limit.get_value() == 0 || catapult_limit2.get_value() == 0)
       cata_move(0);
     } else {
       cata_move(12000);
-    }*/
+    }
     }
     pros::delay(20);
 
@@ -84,6 +132,7 @@ void catapult_reload_limit_task(void* param) {
   }
 }
 
+*/
 
 /*
 //catapult init function to start the catapult reload tasks at the beginning of the program

@@ -118,6 +118,13 @@ void opcontrol() {
    intake_coast(); // Sets the intake to coast mode (no brake)
 
    while (true) {
+
+
+    /////////////////////////////////////////////////////////////
+    
+    //Drive Code
+
+    //////////////////////////////////////////////////////////////
    
     // get left y and right y positions
     int leftY = master.get_analog(LeftY);
@@ -134,61 +141,77 @@ void opcontrol() {
     //LemChassis.curvature(leftY, rightX, 5);
     
 
-    /*
-     // When a new press is detected on R1, the catapult will override the reload task and move a little more, deactivting the slip gear and releases the catapult
-    // This also ensures if accidentally pressed while reloading, the catapult will continue to reload
-    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
-      catapult_fire();                                       //catapult_reload_limit_task(); // Reloads the catapult
-      pros::Task Reload_Limit(catapult_reload_limit_task);
+
+    //////////////////////////////////////////////////////////////
+
+    //Catapult code
+
+    //////////////////////////////////////////////////////////////
+
+    //Catapult fires if R1 is being pressed
+    if (master.get_digital(R1)) {
+      FastFireState(true);
     }
 
-    //if DOWN and B are pressed, then cata goes into nonstop, rapid-fire, mode
-    else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN) && master.get_digital(pros::E_CONTROLLER_DIGITAL_B)){
-      RapidFire();
+    //Catapult switches to Hang Mode
+    else if (master.get_digital(Up) && master.get_digital(X)) {
+      SetStopDegree(3);
     }
 
-    //This is only used if rapid-fire is initiated
-    else if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)){
-    //restart catapult task
-    catapult_stop();
-    TaskState(true);
-    pros::Task Reload_Limit(catapult_reload_limit_task);
+    //If needed to switch back to Normal Cata Rack Position
+    else if (master.get_digital(Up) && master.get_digital(Left)) {
+      SetStopDegree(1);
+    }
+
+    //Last Resort Cata Cut off
+    else if (master.get_digital(Down) && master.get_digital(B) && master.get_digital(Left) && master.get_digital(A)) { 
+      ManualOverrideState(true);
     }
 
     else {
-      //do nothing
+     FastFireState(false);
+
     }
-    */
-    //printf("MatchLoadSpam: %d\n", MatchLoadSpam);
 
 
 
 
-    //intake code
+    /////////////////////////////////////////////////////////////
+    
+    //Intake Code
 
-    //intake into the robot if L1 is being pressed
+    //////////////////////////////////////////////////////////////
+
+    //intake into the robot if L2 is being pressed
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
       intake_in(500);
       pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, "."); 
     }
 
+    //intake into the robot if R2 is being pressed
     else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
      intake_out(600);
     }
-    
+
+    // intake stops if neither L1 or L2 are being pressed
     else {
       intake_stop(); 
     }
 
-    // intake stops if neither L1 or L2 are being pressed
+
+    /////////////////////////////////////////////////////////////
+    
+    //Pneumatic Code
+
+    //////////////////////////////////////////////////////////////
 
     //pneumatic code
     WingL.button(master.get_digital_new_press(Right));
     //WingL.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT));
     WingR.button(master.get_digital_new_press(Y));
 
-    Blocker.button(master.get_digital(A) && master.get_digital(Left));
+    Blocker.button(master.get_digital_new_press(Down));
 
-    pros::delay(10); // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
+    pros::delay(15); // This is used for timer calculations!
   }
 }

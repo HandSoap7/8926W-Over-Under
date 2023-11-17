@@ -13,11 +13,24 @@
 #include "lemlib/api.hpp"
 
 
+//Paths for Pure Pursuit
+
+ASSET(testyty.txt);
+//ASSET(bar_txt);
+//ASSET(sillyskills_txt);
 
 
 
 
-// LEM LIBRARY
+
+
+///////////////////////////////////////////////////////////////////////
+
+//LEM LIBRARY
+
+///////////////////////////////////////////////////////////////////////
+
+
 
 //Drive motors
 pros::Motor left_front_motor(1, pros::E_MOTOR_GEARSET_06, false); // port 1, blue gearbox, not reversed
@@ -119,6 +132,7 @@ void ChassisHold(){
   LeftyMotors.set_brake_modes(pros::E_MOTOR_BRAKE_HOLD);
   RightyMotors.set_brake_modes(pros::E_MOTOR_BRAKE_HOLD);
 }
+
 
 
 

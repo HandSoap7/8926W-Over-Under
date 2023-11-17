@@ -17,4 +17,6 @@ bool catapult_get_limit2();
 void rotation_reset();
 void RapidFire();
 void TaskState(bool State);
-void ManualOverride(bool state);
+void FastFireState(bool State);
+void ManualOverrideState(bool State);
+void SetStopDegree(int State);
