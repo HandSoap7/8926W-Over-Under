@@ -45,6 +45,8 @@
 #include "autons.hpp"
 #include "pistongroup.hpp"
 #include "pistons.hpp"
+#include "lemlib/api.hpp"
+
 
 // More includes here...
 //
