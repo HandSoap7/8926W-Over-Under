@@ -1,8 +1,10 @@
 #pragma once
+#include "autons.hpp"
+#include "lemlib/api.hpp"
+#include "pros/misc.hpp"
 
-#include "EZ-Template/drive/drive.hpp"
 
-extern Drive chassis;
+extern lemlib::Chassis LemChassis;
 
 void drive_example();
 void turn_example();
@@ -20,10 +22,13 @@ void modified_exit_condition();
 
 
 //my autons
-void SixBallOffensive();
-void AWPattempt();
-void Auton_Skills();
+//void SixBallOffensive();
+//void AWPattempt();
+//void Auton_Skills();
 
 //LEM library
 void LemScreen();
-void LemCalibrate();
+
+
+void ChassisCoast();
+void ChassisHold();

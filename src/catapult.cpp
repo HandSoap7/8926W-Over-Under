@@ -1,12 +1,14 @@
 
 #include "catapult.hpp"
-#include "EZ-Template/util.hpp"
 #include "pros/adi.hpp"
 #include "pros/misc.h"
 #include "pros/motors.h"
 #include "pros/rotation.hpp"
 #include "pros/rtos.h"
 #include "pros/rtos.hpp"
+#include "definitions.hpp"
+
+pros::Controller master(pros::E_CONTROLLER_MASTER); // master controller
 
 
 //catapult motor, limit switches, and rotation sensor ports

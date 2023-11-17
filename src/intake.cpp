@@ -1,11 +1,12 @@
 // Intake File
 #include "intake.hpp"
-#include "EZ-Template/util.hpp"
 #include "pros/adi.hpp"
 #include "pros/misc.h"
 #include "pros/motors.h"
 #include "pros/rotation.hpp"
 #include "pros/rtos.hpp"
+#include "definitions.hpp"
+
 
 
 // Recoginition of both intake motors, brain ports, gearset (5.5w motors are fixed to 18),
@@ -13,6 +14,7 @@
 pros::Motor intake(13, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_DEGREES);
 
 
+pros::Controller master(pros::E_CONTROLLER_MASTER); // master controller
 
 
 

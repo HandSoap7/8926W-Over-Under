@@ -1,7 +1,6 @@
 #include "main.h"
-#include "EZ-Template/auton.hpp"
-#include "EZ-Template/util.hpp"
 #include "autons.hpp"
+#include "definitions.hpp"
 #include "display/lv_objx/lv_btnm.h"
 #include "display/lv_objx/lv_imgbtn.h"
 #include "catapult.hpp"
@@ -14,109 +13,35 @@
 #include "pros/rtos.hpp"
 #include <algorithm>
 #include <sys/types.h>
+#include "definitions.hpp"
 #include "lemlib/api.hpp"
 
 
 //#include "lemlib/api.hpp"
 
-/////
-// For instalattion, upgrading, documentations and tutorials, check out website!
-// https://ez-robotics.github.io/EZ-Template/
-/////
 
-
-// Chassis constructor
-Drive chassis (
-  // Left Chassis Ports (negative port will reverse it!)
-  //   the first port is the sensored port (when trackers are not used!)
-  {-7,-8,-17}
-
-  // Right Chassis Ports (negative port will reverse it!)
-  //   the first port is the sensored port (when trackers are not used!)
-  ,{1,3,16}
-
-  // IMU Port
-  ,15
-
-  // Wheel Diameter (Remember, 4" wheels are actually 4.125!)
-  //    (or tracking wheel diameter)
-  ,2.75
-
-  // Cartridge RPM
-  //   (or tick per rotation if using tracking wheels)
-  ,600
-
-  // External Gear Ratio (MUST BE DECIMAL)
-  //    (or gear ratio of tracking wheel)
-  // eg. if your drive is 84:36 where the 36t is powered, your RATIO would be 2.333.
-  // eg. if your drive is 36:60 where the 60t is powered, your RATIO would be 0.6.
-  ,1.375
-
-  // Uncomment if using tracking wheels
-  /*
-  // Left Tracking Wheel Ports (negative port will reverse it!)
-  // ,{1, 2} // 3 wire encoder
-  // ,8 // Rotation sensor
-
-  // Right Tracking Wheel Ports (negative port will reverse it!)
-  // ,{-3, -4} // 3 wire encoder
-  // ,-9 // Rotation sensor
-  */
-
-  // Uncomment if tracking wheels are plugged into a 3 wire expander
-  // 3 Wire Port Expander Smart Port
-  // ,1
-);
-
-
+pros::Controller master(pros::E_CONTROLLER_MASTER); // master controller
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
- *
+ *  
  * All other competition modes are blocked by initialize; it is recommended
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-  // initialize brain screen
-  //pros::lcd::initialize(); // initialize brain screen
-  //pros::Task screenTask(LemScreen); // create a task to print the position to the screen
 
-  // Initialize the catapult
-  
-  
-  pros::delay(500); // Stop the user from doing anything while legacy ports configure.
+  pros::lcd::initialize(); // initialize brain screen
+  LemChassis.calibrate(); // calibrate sensors
 
-
-  // Start the catapult reload tasks
-  pros::Task Reload_Rotation(catapult_reload_rotation_task);
-  //pros::Task Reload_Limit(catapult_reload_limit_task);
-
-
-  // Configure your chassis controls
-  chassis.toggle_modify_curve_with_controller(true); // Enables modifying the controller curve with buttons on the joysticks
-  chassis.set_active_brake(0); // Sets the active brake kP. We recommend 0.1.
-  chassis.set_curve_default(2.5, 7.5); // Defaults for curve. If using tank, only the first parameter is used. (Comment this line out if you have an SD card!)  
-  default_constants(); // Set the drive to your own constants from autons.cpp!
-  exit_condition_defaults(); // Set the exit conditions to your own constants from autons.cpp!
-
-  // These are already defaulted to these buttons, but you can change the left/right curve buttons here!
-  // chassis.set_left_curve_buttons (pros::E_CONTROLLER_DIGITAL_LEFT, pros::E_CONTROLLER_DIGITAL_RIGHT); // If using tank, only the left side is used. 
-  // chassis.set_right_curve_buttons(pros::E_CONTROLLER_DIGITAL_Y,    pros::E_CONTROLLER_DIGITAL_A);
-
-  // Autonomous Selector using LLEMU
-  ez::as::auton_selector.add_autons({
-    Auton("Six Ball PUSH.", SixBallOffensive),
-    Auton("AWP attempt", AWPattempt),
-    Auton("Auton Skills goes crazy", Auton_Skills),
+  // print odom values to the brain
+  pros::Task odomScreenTask(LemScreen);
     
-  });
+  
 
-  // Initialize chassis and auton selector
-  LemCalibrate(); // calibrate the chassis
-  chassis.initialize();
-  ez::as::initialize();
+  pros::Task Reload_Rotation(catapult_reload_rotation_task);
+
+  pros::delay(500); // wait for sensors to calibrate
 }
-
 
 
 /**
@@ -157,12 +82,8 @@ void competition_initialize() {
  * from where it left off.
  */
 void autonomous() {
-  chassis.reset_pid_targets(); // Resets PID targets to 0
-  chassis.reset_gyro(); // Reset gyro position to 0
-  chassis.reset_drive_sensor(); // Reset drive sensors to 0
-  chassis.set_drive_brake(MOTOR_BRAKE_HOLD); // Set motors to hold.  This helps autonomous consistency.
 
-  ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
+  void TestAuton();
 }
 
 
@@ -189,20 +110,29 @@ void autonomous() {
 void opcontrol() {
   // This is preference to what you like to drive on.
   // We use coast because it increases the time before motor burnout
-   chassis.set_drive_brake(MOTOR_BRAKE_COAST);
    
    uint32_t counterVar = 0; 
 
-   //bool MatchLoadSpam = false;
+   ChassisCoast();
 
    intake_coast(); // Sets the intake to coast mode (no brake)
 
    while (true) {
+   
+    // get left y and right y positions
+    int leftY = master.get_analog(LeftY);
+    int rightY = master.get_analog(RightY);
+    int rightX = master.get_analog(RightX);
 
-    //drive code using ez template
+    //Willy Drive
+    LemChassis.tank(leftY, rightY, 3);
 
-    //chassis.tank(); // Tank control for Will (match driver)
-    chassis.arcade_standard(ez::SPLIT); // Standard split arcade for Sarah (skills driver)
+    //Sarah Drive
+    //LemChassis.arcade(leftY, rightX, 5);
+
+    //Test Drive
+    //LemChassis.curvature(leftY, rightX, 5);
+    
 
     /*
      // When a new press is detected on R1, the catapult will override the reload task and move a little more, deactivting the slip gear and releases the catapult
@@ -238,12 +168,12 @@ void opcontrol() {
 
     //intake into the robot if L1 is being pressed
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-      intake_in(475);
+      intake_in(500);
       pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, "."); 
     }
 
     else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-     intake_out(550);
+     intake_out(600);
     }
     
     else {
@@ -253,12 +183,12 @@ void opcontrol() {
     // intake stops if neither L1 or L2 are being pressed
 
     //pneumatic code
-    WingL.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT));
+    WingL.button(master.get_digital_new_press(Right));
     //WingL.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT));
-    WingR.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y));
+    WingR.button(master.get_digital_new_press(Y));
 
-    Blocker.button(master.get_digital(pros::E_CONTROLLER_DIGITAL_A) && master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT));
+    Blocker.button(master.get_digital(A) && master.get_digital(Left));
 
-    pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
+    pros::delay(10); // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }
 }
