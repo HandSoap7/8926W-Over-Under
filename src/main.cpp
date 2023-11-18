@@ -1,27 +1,15 @@
 #include "main.h"
 #include "autons.hpp"
 #include "definitions.hpp"
-#include "display/lv_objx/lv_btnm.h"
-#include "display/lv_objx/lv_imgbtn.h"
 #include "catapult.hpp"
 #include "intake.hpp"
-#include "lemlib/chassis/chassis.hpp"
 #include "pistons.hpp"
-#include "pros/adi.h"
-#include "pros/misc.h"
-#include "pros/misc.hpp"
-#include "pros/rtos.hpp"
-#include <algorithm>
-#include <sys/types.h>
-#include "definitions.hpp"
 #include "lemlib/api.hpp"
-#include "autoSelect/selection.h"
+#include "AutonSelector/auton.hpp"
+#include "AutonSelector/sdcard.hpp"
 
 
 //#include "lemlib/api.hpp"
-
-
-pros::Controller master(pros::E_CONTROLLER_MASTER); // master controller
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -32,14 +20,27 @@ pros::Controller master(pros::E_CONTROLLER_MASTER); // master controller
 void initialize() {
 
   LemChassis.calibrate(); // calibrate sensors
-  selector::init();
 
   // print odom values to the brain
   //pros::Task odomScreenTask(LemScreen);
 
-  pros::Task Reload_Rotation(catapult_reload_rotation_task);
 
   pros::delay(500); // wait for sensors to calibrate
+
+  pros::Task Reload_Rotation(catapult_reload_rotation_task);
+
+
+  ez::as::auton_selector.add_autons({
+    Auton("6 ball far side", SixBall),
+    Auton("push 4 or 5 over close side", EliminationClose),
+    Auton("Get triball out of matchloader and touch hang bar", AWP),
+    Auton("Autonoumous skills", Auton_Skills),
+    Auton("Test File (NOT FOR COMP)", LemTest),
+  });
+
+
+  LemChassis.calibrate(); // calibrate sensors
+  ez::as::initialize();
 }
 
 
@@ -83,32 +84,8 @@ void competition_initialize() {
 void autonomous() {
 
   ChassisHold();
-      
-  if(selector::auton == 1){ //run auton for 6 Ball
-    SixBall();
-  }
 
-  else if(selector::auton == 2){ //run auton for AWP (close)
-    LemTest();
-  }
-
-  else if(selector::auton == -1){ //run auton for AWP (close)
-    AWP();
-  }
-
-  else if(selector::auton == -2){ //run auton for Elimination Close 
-    EliminationClose();
-  }
-
-  else if(selector::auton == 0){ //run auton for Skills
-    Auton_Skills();
-  }
-
-  else{ //run auton for Test
-    //NOTHING
-    
-  }
-
+  ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
 }
 
 
@@ -223,12 +200,12 @@ void opcontrol() {
 
     // intake stops if neither L1 or L2 are being pressed
     else {
-      intake_stop(); 
-    }
+
+        }
 
 
     /////////////////////////////////////////////////////////////
-    
+
     //Pneumatic Code
 
     //////////////////////////////////////////////////////////////
