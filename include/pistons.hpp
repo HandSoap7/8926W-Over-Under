@@ -10,5 +10,5 @@
 // The default state should be what makes the robot in size
 inline PistonGroup WingR('D', false);
 inline PistonGroup WingL('H', false);
-inline PistonGroup Blocker('F', false);
+inline PistonGroup Blocker('C', false);
 

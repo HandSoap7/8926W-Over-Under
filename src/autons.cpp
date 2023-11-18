@@ -15,7 +15,7 @@
 
 //Paths for Pure Pursuit
 
-ASSET(testyty.txt);
+//ASSET(testyty.txt);
 //ASSET(bar_txt);
 //ASSET(sillyskills_txt);
 

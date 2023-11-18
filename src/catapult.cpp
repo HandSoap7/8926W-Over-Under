@@ -8,7 +8,7 @@
 #include "pros/rtos.hpp"
 #include "definitions.hpp"
 
-pros::Controller master(pros::E_CONTROLLER_MASTER); // master controller
+//pros::Controller master(pros::E_CONTROLLER_MASTER); // master controller
 
 
 //catapult motor, limit switches, and rotation sensor ports
@@ -31,9 +31,9 @@ void cata_move(int voltage){
 
 bool ManualOverride = false;
 bool FastFire = false;
-int CataStopDegree = 12000;
-int IntakeBlockDegree = 12000;
-int HangStopDegree = 12000;
+int CataStopDegree = 56;
+int IntakeBlockDegree = 45;
+int HangStopDegree = 22;
 int UsuableStopDegree = IntakeBlockDegree;
 
 void FastFireState(bool state){

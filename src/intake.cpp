@@ -14,7 +14,7 @@
 pros::Motor intake(13, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_DEGREES);
 
 
-pros::Controller master(pros::E_CONTROLLER_MASTER); // master controller
+//pros::Controller master(pros::E_CONTROLLER_MASTER); // master controller
 
 
 
