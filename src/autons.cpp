@@ -33,12 +33,12 @@
 
 
 //Drive motors
-pros::Motor left_front_motor(1, pros::E_MOTOR_GEARSET_06, false); // port 1, blue gearbox, not reversed
-pros::Motor left_middle_motor(2, pros::E_MOTOR_GEARSET_06, false); // port 2, blue gearbox, not reversed
-pros::Motor left_back_motor(3, pros::E_MOTOR_GEARSET_06, false); // port 3, blue gearbox, not reversed
-pros::Motor right_front_motor(4, pros::E_MOTOR_GEARSET_06, true); // port 4, blue gearbox, reversed
-pros::Motor right_middle_motor(3, pros::E_MOTOR_GEARSET_06, true); // port 3, blue gearbox, reversed
-pros::Motor right_back_motor(4, pros::E_MOTOR_GEARSET_06, true); // port 4, blue gearbox, reversed
+pros::Motor left_front_motor(7, pros::E_MOTOR_GEARSET_06, true); // port 1, blue gearbox, not reversed
+pros::Motor left_middle_motor(17, pros::E_MOTOR_GEARSET_06, true); // port 2, blue gearbox, not reversed
+pros::Motor left_back_motor(8, pros::E_MOTOR_GEARSET_06, true); // port 3, blue gearbox, not reversed
+pros::Motor right_front_motor(16, pros::E_MOTOR_GEARSET_06, false); // port 4, blue gearbox, reversed
+pros::Motor right_middle_motor(3, pros::E_MOTOR_GEARSET_06, false); // port 3, blue gearbox, reversed
+pros::Motor right_back_motor(1, pros::E_MOTOR_GEARSET_06, false); // port 4, blue gearbox, reversed
 
 
 
@@ -68,7 +68,7 @@ lemlib::TrackingWheel Horizontal_tracking(&rot1, 2.75, 4.3, 1);
 lemlib::TrackingWheel Vertical_tracking(&rot2, 2.75, 4.3, 1);
 
 // inertial sensor
-pros::Imu Inertial_sensy(21); // port 2
+pros::Imu Inertial_sensy(15); // port 2
  
 // odometry struct
 lemlib::OdomSensors_t sensors {
@@ -82,8 +82,8 @@ lemlib::OdomSensors_t sensors {
 
 // forward/backward PID
 lemlib::ChassisController_t lateralController {
-    8, // kP
-    30, // kD
+    12, // kP
+    35, // kD
     1, // smallErrorRange
     100, // smallErrorTimeout
     3, // largeErrorRange
@@ -93,8 +93,8 @@ lemlib::ChassisController_t lateralController {
  
 // turning PID
 lemlib::ChassisController_t angularController {
-    4, // kP
-    40, // kD
+    8, // kP 4
+    65, // kD 40
     1, // smallErrorRange
     100, // smallErrorTimeout
     3, // largeErrorRange
@@ -586,21 +586,65 @@ void Auton_Skills(){
 }
 */
 
+void SixBall(){
+
+
+}
+
+
+void AWP(){
+
+  WingR.set(false);
+  WingL.set(false);
+  Blocker.set(false);
+  SetStopDegree(2);
+  LemChassis.setPose(-53, -52, 315); // X: 5.2, Y: 10.333, Heading: 87
+
+
+  WingL.set(true);
+  
+
+  LemChassis.moveTo(-42, 18, 315, 1000, 120);
+  WingL.set(false);
+
+  LemChassis.moveTo(-40, -58, 180, 9999, true);
+
+
+
+
+
+}
+
+
+
+void EliminationClose(){
+
+
+}
+
+
+
+void Auton_Skills(){
+
+
+}
+
+
+
 
 void LemTest(){
 
   //Basic start of LEM auton
 
-  pros::lcd::initialize(); // initialize brain screen
-  pros::Task screenTask(LemScreen); // create a task to print the position to the screen
+  //pros::lcd::initialize(); // initialize brain screen
+  //pros::Task screenTask(LemScreen); // create a task to print the position to the screen
 
-
-  LemChassis.setPose(5.2, 10.333, 87); // X: 5.2, Y: 10.333, Heading: 87
+  LemChassis.setPose(0.0, 0, 0); // X: 5.2, Y: 10.333, Heading: 87
 
   ////////////////////////////////////////////////////////////////////////////////////////
 
-  LemChassis.moveTo(10, 0, 1000, 50); // move to the point (10, 0) with a timeout of 1000 ms, and a maximum speed of 50
+  //LemChassis.moveTo(0, 20, 0, 1000, 120); // move to the point (10, 0) with a timeout of 1000 ms, and a maximum speed of 50
 
-  LemChassis.turnTo(10, 0, 1000, false, 50); // turn to the point (10, 0) with a timeout of 1000 ms, and a maximum speed of 50
+  LemChassis.turnTo(5, 5, 1000, 100, false); // turn to the point (10, 0) with a timeout of 1000 ms, and a maximum speed of 50
 
 }

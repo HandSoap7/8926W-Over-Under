@@ -15,6 +15,7 @@
 #include <sys/types.h>
 #include "definitions.hpp"
 #include "lemlib/api.hpp"
+#include "autoSelect/selection.h"
 
 
 //#include "lemlib/api.hpp"
@@ -30,13 +31,11 @@ pros::Controller master(pros::E_CONTROLLER_MASTER); // master controller
  */
 void initialize() {
 
-  pros::lcd::initialize(); // initialize brain screen
   LemChassis.calibrate(); // calibrate sensors
+  selector::init();
 
   // print odom values to the brain
-  pros::Task odomScreenTask(LemScreen);
-    
-  
+  //pros::Task odomScreenTask(LemScreen);
 
   pros::Task Reload_Rotation(catapult_reload_rotation_task);
 
@@ -83,7 +82,33 @@ void competition_initialize() {
  */
 void autonomous() {
 
-  void TestAuton();
+  ChassisHold();
+      
+  if(selector::auton == 1){ //run auton for 6 Ball
+    SixBall();
+  }
+
+  else if(selector::auton == 2){ //run auton for AWP (close)
+    LemTest();
+  }
+
+  else if(selector::auton == -1){ //run auton for AWP (close)
+    AWP();
+  }
+
+  else if(selector::auton == -2){ //run auton for Elimination Close 
+    EliminationClose();
+  }
+
+  else if(selector::auton == 0){ //run auton for Skills
+    Auton_Skills();
+  }
+
+  else{ //run auton for Test
+    //NOTHING
+    
+  }
+
 }
 
 
@@ -117,6 +142,8 @@ void opcontrol() {
 
    intake_coast(); // Sets the intake to coast mode (no brake)
 
+   SetStopDegree(1);
+
    while (true) {
 
 
@@ -132,7 +159,7 @@ void opcontrol() {
     int rightX = master.get_analog(RightX);
 
     //Willy Drive
-    LemChassis.tank(leftY, rightY, 3);
+    LemChassis.tank(leftY, rightY, 1);
 
     //Sarah Drive
     //LemChassis.arcade(leftY, rightX, 5);
@@ -166,6 +193,7 @@ void opcontrol() {
     //Last Resort Cata Cut off
     else if (master.get_digital(Down) && master.get_digital(B) && master.get_digital(Left) && master.get_digital(A)) { 
       ManualOverrideState(true);
+      cata_move(0);
     }
 
     else {
@@ -183,13 +211,13 @@ void opcontrol() {
     //////////////////////////////////////////////////////////////
 
     //intake into the robot if L2 is being pressed
-    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
       intake_in(500);
-      pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, "."); 
+      //pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, "."); 
     }
 
     //intake into the robot if R2 is being pressed
-    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
      intake_out(600);
     }
 
