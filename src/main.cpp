@@ -27,18 +27,21 @@ void initialize() {
   pros::delay(500); // wait for sensors to calibrate
 
   ez::as::auton_selector.add_autons({
-    Auton("6 ball far side", SixBall),
-    Auton("push 4 or 5 over close side", EliminationClose),
-    Auton("Get triball out of matchloader and touch hang bar", AWP),
-    Auton("Autonoumous skills", Auton_Skills),
+    Auton("CLOSE Get triball out of matchloader and touch hang bar", SuperSimpleAWP),
+    Auton("FAR 6 Ball that goes for middle middle triball first", SixBallMiddleMiddle),
+    Auton("FAR 6 Ball that goes for top middle triball first", SixBallMiddleTop),
+    Auton("CLOSE Middle middle triball and push both middle triballs over", CloseMiddleOver),
+    Auton("CLOSE Middle middle triball and push both middle triballs over AND WAIT", CloseMiddleOverWait),
+    Auton("CLOSE Just get Top Middle", CloseTopMiddle), 
     Auton("Test File (NOT FOR COMP)", LemTest),
+    Auton("Autonoumous skills", Auton_Skills),
   });
-  
+
   master.clear();
 	pros::delay(50);
 	master.set_text(0, 0, "      LETS GET");
 	pros::delay(50);
-	master.set_text(1, 0, "     THIS BREAD");
+	master.set_text(1, 0, "     THIS DUBYA");
   
   LemChassis.calibrate(); // calibrate sensors
   //ez::as::initialize( "/usd/WIggleGIF.gif", "/usd/whynotshinegif.gif");
@@ -51,7 +54,7 @@ void initialize() {
 
   pros::delay(200); // Wait for auton selector to finish
 
-  //pros::Task Reload_Rotation(catapult_reload_rotation_task);
+  pros::Task Reload_Rotation(catapult_reload_rotation_task);
   
 }
 
@@ -118,10 +121,6 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 
-  //Weird code our drivers don't use
-  // chassis.arcade_flipped(ez::SPLIT); // Flipped split arcade
-  // chassis.arcade_flipped(ez::SINGLE); // Flipped single arcade
-  // chassis.arcade_standard(ez::SINGLE); // Standard single arcade
 
 void opcontrol() {
   // This is preference to what you like to drive on.
@@ -129,14 +128,13 @@ void opcontrol() {
    
    uint32_t counterVar = 0; 
 
-   ChassisCoast();
+   ChassisCoast(); //Sets all drivetrain motors to coast (low friction)
 
    intake_coast(); // Sets the intake to coast mode (no brake)
 
-   SetStopDegree(1);
+   SetStopDegree(1); //Set cata stop to intake blocking (best for intaking)
 
    while (true) {
-
 
     /////////////////////////////////////////////////////////////
     

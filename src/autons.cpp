@@ -172,14 +172,7 @@ void ChassisHold(){
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
-void SixBall(){
-
-
-}
-
-
-void AWP(){
+void SuperSimpleAWP(){
 
   WingR.set(false);
   WingL.set(false);
@@ -204,7 +197,42 @@ void AWP(){
 
 
 
-void EliminationClose(){
+void SixBallMiddleMiddle(){
+
+
+}
+
+
+
+void SixBallMiddleTop(){
+
+
+}
+
+
+
+void CloseMiddleOver(){
+
+
+}
+
+
+
+void CloseMiddleOverWait(){
+
+
+}
+
+
+
+void CloseTopMiddle(){
+
+
+}
+
+
+
+void CloseMiddleOverTouchHang(){
 
 
 }
@@ -215,7 +243,6 @@ void Auton_Skills(){
 
 
 }
-
 
 
 
@@ -235,6 +262,7 @@ void LemTest(){
   LemChassis.turnTo(5, 5, 1000, 100, false); // turn to the point (10, 0) with a timeout of 1000 ms, and a maximum speed of 50
 
 }
+
 
 
 void GifTest(){

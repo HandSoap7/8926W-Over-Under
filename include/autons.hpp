@@ -8,12 +8,16 @@ extern lemlib::Chassis LemChassis;
 
 
 
-//my autons
-void SixBall();
-void AWP();
+//Wiggle autons
+void SuperSimpleAWP();
+void SixBallMiddleMiddle();
+void SixBallMiddleTop();
+void CloseMiddleOver();
+void CloseMiddleOverWait();
+void CloseTopMiddle();
+void CloseMiddleOverTouchHang();
 void Auton_Skills();
-void EliminationClose();
-void LemTest();
+
 
 //LEM library
 void LemScreen();
@@ -22,5 +26,5 @@ void LemScreen();
 void ChassisCoast();
 void ChassisHold();
 
-
+void LemTest();
 void GifTest();
