@@ -17,7 +17,7 @@ namespace ez {
 /**
  * Prints our branding all over your pros terminal
  */
-void print_ez_template();
+void print_WIGGLE_template();
 
 /**
  * Prints to the brain screen in one string.  Splits input between lines with

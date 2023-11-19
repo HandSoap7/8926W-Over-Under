@@ -160,7 +160,7 @@ void AutonSelector::create() {
   lv_win_set_title(win, "");
 
   menu_gif_obj = lv_obj_create(lv_scr_act(), NULL);
-  lv_obj_set_size(menu_gif_obj, 480, 240);
+  lv_obj_set_size(menu_gif_obj, 120, 120);
   lv_obj_set_style(menu_gif_obj, &lv_style_transp); // make the container invisible
   lv_obj_align(menu_gif_obj, NULL, LV_ALIGN_CENTER, 0, 0);
 
@@ -195,10 +195,10 @@ void AutonSelector::create() {
   lv_ddlist_set_style(autonDD, LV_DDLIST_STYLE_SEL, &styleDD);
 
   skillsLabel = lv_label_create(skills, NULL);
-  lv_label_set_text(skillsLabel, "Run skills");
+  lv_label_set_text(skillsLabel, "GO CRAZY?");
 
   confirmLabel = lv_label_create(confirm, NULL);
-  lv_label_set_text(confirmLabel, "Confirm");
+  lv_label_set_text(confirmLabel, "Aprove");
 
   while (auton == -1) {
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) && master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {

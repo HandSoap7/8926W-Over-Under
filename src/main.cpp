@@ -19,16 +19,12 @@
  */
 void initialize() {
 
-  LemChassis.calibrate(); // calibrate sensors
-
+  ez::print_WIGGLE_template();
   // print odom values to the brain
   //pros::Task odomScreenTask(LemScreen);
 
 
   pros::delay(500); // wait for sensors to calibrate
-
-  pros::Task Reload_Rotation(catapult_reload_rotation_task);
-
 
   ez::as::auton_selector.add_autons({
     Auton("6 ball far side", SixBall),
@@ -37,10 +33,26 @@ void initialize() {
     Auton("Autonoumous skills", Auton_Skills),
     Auton("Test File (NOT FOR COMP)", LemTest),
   });
-
-
+  
+  master.clear();
+	pros::delay(50);
+	master.set_text(0, 0, "      LETS GET");
+	pros::delay(50);
+	master.set_text(1, 0, "     THIS BREAD");
+  
   LemChassis.calibrate(); // calibrate sensors
-  ez::as::initialize();
+  //ez::as::initialize( "/usd/WIggleGIF.gif", "/usd/whynotshinegif.gif");
+  
+  pros::screen::erase();
+  
+  master.clear();
+	pros::delay(50);
+  master.set_text(0, 0, ez::as::auton_selector.Autons[ez::as::auton_selector.selected_auton].Name);
+
+  pros::delay(200); // Wait for auton selector to finish
+
+  //pros::Task Reload_Rotation(catapult_reload_rotation_task);
+  
 }
 
 
@@ -85,7 +97,9 @@ void autonomous() {
 
   ChassisHold();
 
-  ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
+  GifTest();
+
+  //ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
 }
 
 
@@ -200,7 +214,7 @@ void opcontrol() {
 
     // intake stops if neither L1 or L2 are being pressed
     else {
-
+      intake_stop();
         }
 
 
