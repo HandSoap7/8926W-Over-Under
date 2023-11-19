@@ -79,7 +79,7 @@ lemlib::OdomSensors_t sensors {
     &Inertial_sensy // inertial sensor
 };
 
-
+/*
 // forward/backward PID
 lemlib::ChassisController_t lateralController {
     12, // kP
@@ -90,6 +90,8 @@ lemlib::ChassisController_t lateralController {
     500, // largeErrorTimeout
     10 // slew rate
 };
+
+
  
 // turning PID
 lemlib::ChassisController_t angularController {
@@ -101,7 +103,31 @@ lemlib::ChassisController_t angularController {
     500, // largeErrorTimeout
     10 // slew rate
 };
+*/
 
+/**/
+//TUNING CONTROLLERS
+
+lemlib::ChassisController_t lateralController {
+    10, // kP
+    30, // kD
+    0, // smallErrorRange
+    100, // smallErrorTimeout
+    0, // largeErrorRange
+    500, // largeErrorTimeout
+    10 // slew rate
+};
+
+// turning PID
+lemlib::ChassisController_t angularController {
+    8, // kP 4
+    65, // kD 40
+    0, // smallErrorRange
+    100, // smallErrorTimeout
+    0, // largeErrorRange
+    500, // largeErrorTimeout
+    10 // slew rate
+};
 
 
 
@@ -602,7 +628,7 @@ void AWP(){
 
 
   WingL.set(true);
-  
+
 
   LemChassis.moveTo(-42, 18, 315, 1000, 120);
   WingL.set(false);
