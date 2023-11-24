@@ -20,4 +20,6 @@ class AutonSelector {
   void add_autons(std::vector<Auton> autons);
   void create();
   void end();
+  void ImuInitializeGif(int gif_length, std::string gif_path);
+
 };

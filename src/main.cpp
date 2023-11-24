@@ -7,6 +7,7 @@
 #include "lemlib/api.hpp"
 #include "AutonSelector/auton.hpp"
 #include "AutonSelector/sdcard.hpp"
+#include "gif-pros/gifclass.hpp"
 
 
 //#include "lemlib/api.hpp"
@@ -24,17 +25,15 @@ void initialize() {
   //pros::Task odomScreenTask(LemScreen);
 
 
-  pros::delay(500); // wait for sensors to calibrate
-
   ez::as::auton_selector.add_autons({
-    Auton("CLOSE Get triball out of matchloader and touch hang bar", SuperSimpleAWP),
-    Auton("FAR 6 Ball that goes for middle middle triball first", SixBallMiddleMiddle),
-    Auton("FAR 6 Ball that goes for top middle triball first", SixBallMiddleTop),
-    Auton("CLOSE Middle middle triball and push both middle triballs over", CloseMiddleOver),
-    Auton("CLOSE Middle middle triball and push both middle triballs over AND WAIT", CloseMiddleOverWait),
-    Auton("CLOSE Just get Top Middle", CloseTopMiddle), 
-    Auton("Test File (NOT FOR COMP)", LemTest),
-    Auton("Autonoumous skills", Auton_Skills),
+    Auton("1 AWP", SuperSimpleAWP),
+    Auton("2 FAR MidMid", SixBallMiddleMiddle),
+    Auton("3 FAR MidTop", SixBallMiddleTop),
+    Auton("4 CLOSE Over", CloseMiddleOver),
+    Auton("5 CLOSE OverWait", CloseMiddleOverWait),
+    Auton("6 CLOSE TopMid", CloseTopMiddle), 
+  //  Auton("Test File (NO COMP)", LemTest),
+    Auton("Auton Skills", Auton_Skills),
   });
 
   master.clear();
@@ -43,11 +42,13 @@ void initialize() {
 	pros::delay(50);
 	master.set_text(1, 0, "     THIS DUBYA");
   
-  LemChassis.calibrate(); // calibrate sensors
-  //ez::as::initialize( "/usd/WIggleGIF.gif", "/usd/whynotshinegif.gif");
+  //LemChassis.calibrate(); // calibrate sensors
+  ez::as::auton_selector.ImuInitializeGif(3150, "/usd/AircraftTakeoff.gif");
+  //printf("imu initialized and startup gif shown\n")
+  ez::as::initialize( "/usd/whynotshine.gif", "/usd/WiggleMain.gif");
   
   pros::screen::erase();
-  
+
   master.clear();
 	pros::delay(50);
   master.set_text(0, 0, ez::as::auton_selector.Autons[ez::as::auton_selector.selected_auton].Name);
@@ -98,11 +99,9 @@ void competition_initialize() {
  */
 void autonomous() {
 
-  ChassisHold();
+  ChassisCoast();
 
-  GifTest();
-
-  //ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
+  ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
 }
 
 
@@ -151,10 +150,10 @@ void opcontrol() {
     LemChassis.tank(leftY, rightY, 1);
 
     //Sarah Drive
-    //LemChassis.arcade(leftY, rightX, 5);
+    //LemChassis.arcade(leftY, rightX, 4);
 
     //Test Drive
-    //LemChassis.curvature(leftY, rightX, 5);
+    //xc                                 LemChassis.curvature(leftY, rightX, 2.5);
     
 
 
@@ -201,7 +200,7 @@ void opcontrol() {
 
     //intake into the robot if L2 is being pressed
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-      intake_in(500);
+      intake_in(600);
       //pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, "."); 
     }
 
