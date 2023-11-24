@@ -240,7 +240,7 @@ void CloseMiddleOverTouchHang(){
 
 
 void Auton_Skills(){
-
+  printf("running skills/n");
 
 }
 
@@ -262,39 +262,3 @@ void LemTest(){
   LemChassis.turnTo(5, 5, 1000, 100, false); // turn to the point (10, 0) with a timeout of 1000 ms, and a maximum speed of 50
 
 }
-
-
-
-void GifTest(){
-  pros::lcd::initialize();
-
-  pros::lcd::set_text(1, "Please print on brain");
-
-  pros::delay(3000);
-  
-  pros::lcd::clear();
-
-
-  printf("start of giftest\n");
-  lv_obj_t * TestGifObj;
-  printf("first part done\n");
-
-  TestGifObj = lv_obj_create(lv_scr_act(), NULL);
-  lv_obj_set_size(TestGifObj, 240, 240);
-  lv_obj_set_style(TestGifObj, &lv_style_transp); // make the container invisible
-  lv_obj_align(TestGifObj, NULL, LV_ALIGN_CENTER, 0, 0);
-
-   printf("2nd part done\n");
-  
-  static Gif gif("/usd/WIggleGIF.gif", lv_scr_act());
-
-   printf("Gif should be on \n");
-  
-  pros::delay(5000);
-
-   printf("after wait\n");
-
-  gif.clean();
-
-   printf("gif should be gone\n");
-} 

@@ -8,6 +8,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #include "gif-pros/gifclass.hpp"
 
 // LVGL SETUP
+lv_obj_t * main_gif_obj;
 lv_obj_t * skills;
 lv_obj_t * confirm;
 lv_obj_t * autonDD;
@@ -56,6 +57,30 @@ char* AutonSelector::generateAutonList() {
 
   return const_cast<char*>(auton_list.c_str());
 }
+
+
+void AutonSelector::ImuInitializeGif(int gif_length, std::string gif_path){
+  Inertial_sensy.reset();
+  int iter = 0;
+
+  static Gif gif(const_cast<char*>(gif_path.c_str()), lv_scr_act());
+  
+  while (true) {
+    if (iter >= gif_length && !(Inertial_sensy.get_status() & pros::c::E_IMU_STATUS_CALIBRATING)) {
+      printf("IMU is done calibrating (took %d ms)\n", iter);
+      break;
+    }
+    else if (iter >= gif_length + 1000) {
+      printf("No IMU plugged in, (took %d ms to realize that)\n", iter);
+      break;
+    }
+    iter += 15;
+    pros::delay(15);
+  }
+  gif.clean();
+
+}
+
 
 lv_res_t btn_click_action(lv_obj_t * btn) {
 
@@ -160,9 +185,9 @@ void AutonSelector::create() {
   lv_win_set_title(win, "");
 
   menu_gif_obj = lv_obj_create(lv_scr_act(), NULL);
-  lv_obj_set_size(menu_gif_obj, 120, 120);
+  lv_obj_set_size(menu_gif_obj, 240, 240);
   lv_obj_set_style(menu_gif_obj, &lv_style_transp); // make the container invisible
-  lv_obj_align(menu_gif_obj, NULL, LV_ALIGN_CENTER, 0, 0);
+  lv_obj_align(menu_gif_obj, NULL, LV_ALIGN_CENTER, -112, 15);
 
   static Gif menu_gif(const_cast<char*>(menu_gif_path.c_str()), menu_gif_obj);
 
@@ -206,7 +231,7 @@ void AutonSelector::create() {
       printf("Auton: %d\n", auton);
       break;
     }
-    pros::delay(10);
+    pros::delay(20);
   }
 
   menu_gif.clean();
@@ -228,7 +253,7 @@ void AutonSelector::end() {
   gif_obj = lv_obj_create(lv_scr_act(), NULL);
   lv_obj_set_size(gif_obj, 480, 240);
   lv_obj_set_style(gif_obj, &lv_style_transp); // make the container invisible
-  lv_obj_align(gif_obj, NULL, LV_ALIGN_CENTER, 0, 0);
+  lv_obj_align(gif_obj, NULL, LV_ALIGN_CENTER, 95, 0);
 
   static Gif gif(const_cast<char*>(gif_path.c_str()), gif_obj);
 

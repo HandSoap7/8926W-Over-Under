@@ -5,7 +5,7 @@
 
 
 extern lemlib::Chassis LemChassis;
-
+extern pros::Imu Inertial_sensy;
 
 
 //Wiggle autons
@@ -27,4 +27,3 @@ void ChassisCoast();
 void ChassisHold();
 
 void LemTest();
-void GifTest();
