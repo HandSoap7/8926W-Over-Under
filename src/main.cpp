@@ -10,9 +10,11 @@
 #include "pros/adi.h"
 #include "pros/misc.h"
 #include "pros/misc.hpp"
+#include "pros/motors.h"
 #include "pros/rtos.hpp"
 #include <algorithm>
 #include <sys/types.h>
+#include "definitions.hpp"
 
 /////
 // For instalattion, upgrading, documentations and tutorials, check out website!
@@ -24,18 +26,18 @@
 Drive chassis (
   // Left Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  {-10,-8,9}
+  {-7, -8, -18}
 
   // Right Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  ,{13,-16,18}
+  ,{1, 3, 16}
 
   // IMU Port
-  ,21
+  ,15
 
   // Wheel Diameter (Remember, 4" wheels are actually 4.125!)
   //    (or tracking wheel diameter)
-  ,2.75
+  ,2.745
 
   // Cartridge RPM
   //   (or tick per rotation if using tracking wheels)
@@ -45,7 +47,7 @@ Drive chassis (
   //    (or gear ratio of tracking wheel)
   // eg. if your drive is 84:36 where the 36t is powered, your RATIO would be 2.333.
   // eg. if your drive is 36:60 where the 60t is powered, your RATIO would be 0.6.
-  ,1.375
+  ,1.345
 
   // Uncomment if using tracking wheels
   /*
@@ -83,8 +85,8 @@ void initialize() {
 
   // Start the catapult reload tasks
   //pros::Task Reload_Rotation(catapult_reload_rotation_task);
-  pros::Task Reload_Limit(catapult_reload_limit_task);
 
+  pros::Task Reload_Rotation(catapult_reload_rotation_task);
 
   // Configure your chassis controls
   chassis.toggle_modify_curve_with_controller(true); // Enables modifying the controller curve with buttons on the joysticks
@@ -99,11 +101,15 @@ void initialize() {
 
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.add_autons({
-    Auton("Six Ball PUSH.", SixBallOffensive),
-    Auton("AWP attempt", AWPattempt),
-    Auton("Max shooting auton", HighScoringShooting),
-    Auton("Auton Skills goes crazy", Auton_Skills),
-    
+     Auton("1 AWP", SuperSimpleAWP),
+    Auton("2 FAR MidMid", SixBallMiddleMiddle),
+    Auton("3 FAR MidTop", SixBallMiddleTop),
+    Auton("4 FAR Safe", SixBallSafe),
+    Auton("5 CLOSE Over", CloseMiddleOver),
+    Auton("6 CLOSE OverWait", CloseMiddleOverWait),
+    Auton("7 CLOSE TopMid", CloseTopMiddle), 
+    Auton("Tuning", )
+    Auton("Auton Skills", Auton_Skills),
   });
 
   // Initialize chassis and auton selector
@@ -154,7 +160,7 @@ void autonomous() {
   chassis.reset_pid_targets(); // Resets PID targets to 0
   chassis.reset_gyro(); // Reset gyro position to 0
   chassis.reset_drive_sensor(); // Reset drive sensors to 0
-  chassis.set_drive_brake(MOTOR_BRAKE_HOLD); // Set motors to hold.  This helps autonomous consistency.
+  chassis.set_drive_brake(pros::E_MOTOR_BRAKE_COAST); // Set motors to hold.  This helps autonomous consistency.
 
   ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
 }
@@ -183,79 +189,112 @@ void autonomous() {
 void opcontrol() {
   // This is preference to what you like to drive on.
   // We use coast because it increases the time before motor burnout
-   chassis.set_drive_brake(MOTOR_BRAKE_COAST);
    uint32_t counterVar = 0; 
 
-    intakeActuate.set(true);
-
-   //bool MatchLoadSpam = false;
+   ChassisCoast(); //Sets all drivetrain motors to coast (low friction)
 
    intake_coast(); // Sets the intake to coast mode (no brake)
 
+   SetStopDegree(1); //Set cata stop to intake blocking (best for intaking)
+
+   OdomRetraction.set(true); //Retract the horizontal odom wheel
+   Blocker.set(false); //Lower the blocker
+   AuxHang.set(false); //Don't deploy auxHang
+   WingL.set(false); //Retract the left wing
+   WingR.set(false); //Retract the right wing
+
    while (true) {
 
-    //drive code using ez template
-
-    chassis.tank(); // Tank control for Will (match driver)
-    //chassis.arcade_standard(ez::SPLIT); // Standard split arcade for Sarah (skills driver)
-
-    /*
-     // When a new press is detected on R1, the catapult will override the reload task and move a little more, deactivting the slip gear and releases the catapult
-    // This also ensures if accidentally pressed while reloading, the catapult will continue to reload
-    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
-      catapult_fire();                                       //catapult_reload_limit_task(); // Reloads the catapult
-      pros::Task Reload_Limit(catapult_reload_limit_task);
-    }
-
-    //if DOWN and B are pressed, then cata goes into nonstop, rapid-fire, mode
-    else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN) && master.get_digital(pros::E_CONTROLLER_DIGITAL_B)){
-      RapidFire();
-    }
-
-    //This is only used if rapid-fire is initiated
-    else if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)){
-    //restart catapult task
-    catapult_stop();
-    TaskState(true);
-    pros::Task Reload_Limit(catapult_reload_limit_task);
-    }
-
-    else {
-      //do nothing
-    }
-    */
-    //printf("MatchLoadSpam: %d\n", MatchLoadSpam);
-
-
-
-
-    //intake code
-
-    //intake into the robot if L1 is being pressed
-    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-      intake_in(475);
-      pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, "."); 
-    }
-
-    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-     intake_out(550);
-    }
+    /////////////////////////////////////////////////////////////
     
+    //Drive Code
+
+    //////////////////////////////////////////////////////////////
+    
+
+    chassis.tank(); // Will Drive
+   
+    chassis.arcade_standard(ez::SPLIT); // Sarah Drive
+
+
+    //////////////////////////////////////////////////////////////
+
+    //Catapult code
+
+    //////////////////////////////////////////////////////////////
+
+    //Catapult fires if R1 is being pressed
+    if (master.get_digital(R1)) {
+      FastFireState(true);
+    }
+
+    //Catapult switches to Hang Mode
+    else if (master.get_digital(A)) {
+      SetStopDegree(3);
+    }
+
+    else if (master.get_digital(X)) {
+      SetStopDegree(2);
+    }
+
+    //If needed to switch back to Normal Cata Rack Position
+    else if (master.get_digital(B)) {
+      SetStopDegree(1);
+    }
+
+    //Last Resort Cata Cut off
+    else if (master.get_digital(Down) && master.get_digital(B) && master.get_digital(Left) && master.get_digital(A)) { 
+      ManualOverrideState(true);
+      cata_move(0);
+    }
+
     else {
-      intake_stop(); 
+     FastFireState(false);
+
+    }
+
+
+
+
+    /////////////////////////////////////////////////////////////
+    
+    //Intake Code
+
+    //////////////////////////////////////////////////////////////
+
+    //intake into the robot if L2 is being pressed
+    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+      intake_in(600);
+      //pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, "."); 
+    }
+
+    //intake into the robot if R2 is being pressed
+    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+     intake_out(600);
     }
 
     // intake stops if neither L1 or L2 are being pressed
+    else {
+      intake_stop();
+        }
 
-    //pneumatic code
-    WingL.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT));
+
+    /////////////////////////////////////////////////////////////
+
+    //Pneumatic Code
+
+    //////////////////////////////////////////////////////////////
+
+
+    WingL.button(master.get_digital_new_press(Right));
     //WingL.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT));
-    WingR.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y));
+    WingR.button(master.get_digital_new_press(Y));
 
-    intakeActuate.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X));
 
-    lowHang.button(master.get_digital(pros::E_CONTROLLER_DIGITAL_A) && master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT));
+    Blocker.button(master.get_digital_new_press(L1));
 
-    pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
+    AuxHang.button(master.get_digital_new_press(Up));
+
+    pros::delay(15); // This is used for timer calculations!
   }
 }
