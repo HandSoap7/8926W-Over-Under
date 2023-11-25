@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "Will",
+    "project_name": "Sarah",
     "target": "v5",
     "templates": {
       "LemLib": {
@@ -209,9 +209,9 @@
       }
     },
     "upload_options": {
-      "description": "230???A",
-      "icon": "X",
-      "slot": 1
+      "description": "230???",
+      "icon": "pros",
+      "slot": 2
     }
   }
 }

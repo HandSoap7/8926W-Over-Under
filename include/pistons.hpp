@@ -11,4 +11,6 @@
 inline PistonGroup WingR('D', false);
 inline PistonGroup WingL('H', false);
 inline PistonGroup Blocker('C', false);
+inline PistonGroup OdomRetraction('C', false);
+inline PistonGroup AuxHang('C', false);
 

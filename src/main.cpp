@@ -133,6 +133,12 @@ void opcontrol() {
 
    SetStopDegree(1); //Set cata stop to intake blocking (best for intaking)
 
+   OdomRetraction.set(true); //Retract the horizontal odom wheel
+   Blocker.set(false); //Lower the blocker
+   AuxHang.set(false); //Don't deploy auxHang
+   WingL.set(false); //Retract the left wing
+   WingR.set(false); //Retract the right wing
+
    while (true) {
 
     /////////////////////////////////////////////////////////////
@@ -147,10 +153,10 @@ void opcontrol() {
     int rightX = master.get_analog(RightX);
 
     //Willy Drive
-    LemChassis.tank(leftY, rightY, 1);
+    //LemChassis.tank(leftY, rightY, 1);
 
     //Sarah Drive
-    //LemChassis.arcade(leftY, rightX, 4);
+    LemChassis.arcade(leftY, rightX, 4);
 
     //Test Drive
     //xc                                 LemChassis.curvature(leftY, rightX, 2.5);
@@ -169,12 +175,16 @@ void opcontrol() {
     }
 
     //Catapult switches to Hang Mode
-    else if (master.get_digital(Up) && master.get_digital(X)) {
+    else if (master.get_digital(A)) {
       SetStopDegree(3);
     }
 
+    else if (master.get_digital(X)) {
+      SetStopDegree(2);
+    }
+
     //If needed to switch back to Normal Cata Rack Position
-    else if (master.get_digital(Up) && master.get_digital(Left)) {
+    else if (master.get_digital(B)) {
       SetStopDegree(1);
     }
 
@@ -221,12 +231,15 @@ void opcontrol() {
 
     //////////////////////////////////////////////////////////////
 
-    //pneumatic code
+
     WingL.button(master.get_digital_new_press(Right));
     //WingL.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT));
     WingR.button(master.get_digital_new_press(Y));
 
-    Blocker.button(master.get_digital_new_press(Down));
+
+    Blocker.button(master.get_digital_new_press(L1));
+
+    AuxHang.button(master.get_digital_new_press(Up));
 
     pros::delay(15); // This is used for timer calculations!
   }
