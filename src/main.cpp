@@ -160,7 +160,7 @@ void autonomous() {
   chassis.reset_pid_targets(); // Resets PID targets to 0
   chassis.reset_gyro(); // Reset gyro position to 0
   chassis.reset_drive_sensor(); // Reset drive sensors to 0
-  chassis.set_drive_brake(pros::E_MOTOR_BRAKE_COAST); // Set motors to hold.  This helps autonomous consistency.
+  chassis.set_drive_brake(pros::E_MOTOR_BRAKE_HOLD); // Set motors to hold.  This helps autonomous consistency.
 
   ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
 }
@@ -191,7 +191,7 @@ void opcontrol() {
   // We use coast because it increases the time before motor burnout
    uint32_t counterVar = 0; 
 
-   ChassisCoast(); //Sets all drivetrain motors to coast (low friction)
+   chassis.set_drive_brake(pros::E_MOTOR_BRAKE_COAST); // Sets the drive to coast mode (no brake)
 
    intake_coast(); // Sets the intake to coast mode (no brake)
 
