@@ -32,7 +32,8 @@ void initialize() {
     Auton("4 CLOSE Over", CloseMiddleOver),
     Auton("5 CLOSE OverWait", CloseMiddleOverWait),
     Auton("6 CLOSE TopMid", CloseTopMiddle), 
-  //  Auton("Test File (NO COMP)", LemTest),
+    Auton("Test File (NO COMP)", LemTest),
+    Auton("Odom tracking", MakeAuton),
     Auton("Auton Skills", Auton_Skills),
   });
 
@@ -42,7 +43,7 @@ void initialize() {
 	pros::delay(50);
 	master.set_text(1, 0, "     THIS DUBYA");
   
-  //LemChassis.calibrate(); // calibrate sensors
+  LemChassis.calibrate(); // calibrate sensors
   ez::as::auton_selector.ImuInitializeGif(3150, "/usd/AircraftTakeoff.gif");
   //printf("imu initialized and startup gif shown\n")
   ez::as::initialize( "/usd/whynotshine.gif", "/usd/WiggleMain.gif");
@@ -153,10 +154,10 @@ void opcontrol() {
     int rightX = master.get_analog(RightX);
 
     //Willy Drive
-    //LemChassis.tank(leftY, rightY, 1);
+    LemChassis.tank(leftY, rightY, 1);
 
     //Sarah Drive
-    LemChassis.arcade(leftY, rightX, 4);
+    //LemChassis.arcade(leftY, rightX, 4);
 
     //Test Drive
     //xc                                 LemChassis.curvature(leftY, rightX, 2.5);

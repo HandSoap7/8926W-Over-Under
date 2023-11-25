@@ -27,3 +27,4 @@ void ChassisCoast();
 void ChassisHold();
 
 void LemTest();
+void MakeAuton();

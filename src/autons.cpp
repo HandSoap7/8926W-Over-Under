@@ -110,8 +110,8 @@ lemlib::ChassisController_t angularController {
 //TUNING CONTROLLERS
 
 lemlib::ChassisController_t lateralController {
-    10, // kP
-    30, // kD
+    1, // kP 10
+    0, // kD 30
     0, // smallErrorRange
     100, // smallErrorTimeout
     0, // largeErrorRange
@@ -121,8 +121,8 @@ lemlib::ChassisController_t lateralController {
 
 // turning PID
 lemlib::ChassisController_t angularController {
-    8, // kP 4
-    65, // kD 40
+    0, // kP 4
+    0, // kD 40
     0, // smallErrorRange
     100, // smallErrorTimeout
     0, // largeErrorRange
@@ -178,19 +178,20 @@ void SuperSimpleAWP(){
   WingL.set(false);
   Blocker.set(false);
   SetStopDegree(2);
-  LemChassis.setPose(-53, -52, 315); // X: 5.2, Y: 10.333, Heading: 87
+  LemChassis.setPose(-53, -53, 315); // X: 5.2, Y: 10.333, Heading: 87
 
 
   WingL.set(true);
 
 
-  LemChassis.moveTo(-42, 18, 315, 1000, 120);
+  LemChassis.moveTo(-60, -56, 315, 9999);
+  WingL.set(true); 
+
+  LemChassis.moveTo(-49, -57, 315, 9999, true);
   WingL.set(false);
 
-  LemChassis.moveTo(-40, -58, 180, 9999, true);
 
-
-
+  LemChassis.moveTo(-8, -60, 90, 9999, true);
 
 
 }
@@ -198,6 +199,11 @@ void SuperSimpleAWP(){
 
 
 void SixBallMiddleMiddle(){
+  WingR.set(false);
+  WingL.set(false);
+  Blocker.set(false);
+  SetStopDegree(2);
+  LemChassis.setPose(-53, -52, 315); // X: 5.2, Y: 10.333, Heading: 87
 
 
 }
@@ -205,13 +211,32 @@ void SixBallMiddleMiddle(){
 
 
 void SixBallMiddleTop(){
+  WingR.set(false);
+  WingL.set(false);
+  Blocker.set(false);
+  SetStopDegree(2);
+  LemChassis.setPose(-53, -52, 315); // X: 5.2, Y: 10.333, Heading: 87
+
+}
+
+
+void SixBallSafe(){
+  WingR.set(false);
+  WingL.set(false);
+  Blocker.set(false);
+  SetStopDegree(2);
+  LemChassis.setPose(-53, -52, 315); // X: 5.2, Y: 10.333, Heading: 87
 
 
 }
 
 
-
 void CloseMiddleOver(){
+  WingR.set(false);
+  WingL.set(false);
+  Blocker.set(false);
+  SetStopDegree(2);
+  LemChassis.setPose(-53, -52, 315); // X: 5.2, Y: 10.333, Heading: 87
 
 
 }
@@ -219,6 +244,11 @@ void CloseMiddleOver(){
 
 
 void CloseMiddleOverWait(){
+  WingR.set(false);
+  WingL.set(false);
+  Blocker.set(false);
+  SetStopDegree(2);
+  LemChassis.setPose(-53, -52, 315); // X: 5.2, Y: 10.333, Heading: 87
 
 
 }
@@ -226,6 +256,11 @@ void CloseMiddleOverWait(){
 
 
 void CloseTopMiddle(){
+  WingR.set(false);
+  WingL.set(false);
+  Blocker.set(false);
+  SetStopDegree(2);
+  LemChassis.setPose(-53, -52, 315); // X: 5.2, Y: 10.333, Heading: 87
 
 
 }
@@ -233,6 +268,11 @@ void CloseTopMiddle(){
 
 
 void CloseMiddleOverTouchHang(){
+  WingR.set(false);
+  WingL.set(false);
+  Blocker.set(false);
+  SetStopDegree(2);
+  LemChassis.setPose(-53, -52, 315); // X: 5.2, Y: 10.333, Heading: 87
 
 
 }
@@ -240,7 +280,12 @@ void CloseMiddleOverTouchHang(){
 
 
 void Auton_Skills(){
-  printf("running skills/n");
+  //("running skills/n");
+  WingR.set(false);
+  WingL.set(false);
+  Blocker.set(false);
+  SetStopDegree(2);
+  LemChassis.setPose(-53, -52, 315); // X: 5.2, Y: 10.333, Heading: 87
 
 }
 
@@ -257,8 +302,17 @@ void LemTest(){
 
   ////////////////////////////////////////////////////////////////////////////////////////
 
-  //LemChassis.moveTo(0, 20, 0, 1000, 120); // move to the point (10, 0) with a timeout of 1000 ms, and a maximum speed of 50
+  LemChassis.moveTo(0, 20, 0, 1000, 120); // move to the point (10, 0) with a timeout of 1000 ms, and a maximum speed of 50
 
-  LemChassis.turnTo(5, 5, 1000, 100, false); // turn to the point (10, 0) with a timeout of 1000 ms, and a maximum speed of 50
+  //LemChassis.turnTo(5, 5, 99999, 127, false); // turn to the point (10, 0) with a timeout of 1000 ms, and a maximum speed of 50
+
+}
+
+
+void MakeAuton(){
+
+  LemChassis.setPose(0.0, 0, 0); // Plain but can be configured
+  
+  LemScreen();
 
 }
