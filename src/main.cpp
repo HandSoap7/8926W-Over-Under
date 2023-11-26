@@ -15,7 +15,6 @@
 #include <algorithm>
 #include <sys/types.h>
 #include "definitions.hpp"
-#include "gif-pros/gifclass.hpp"
 
 /////
 // For instalattion, upgrading, documentations and tutorials, check out website!
@@ -109,7 +108,7 @@ void initialize() {
     Auton("5 CLOSE Over", CloseMiddleOver),
     Auton("6 CLOSE OverWait", CloseMiddleOverWait),
     Auton("7 CLOSE TopMid", CloseTopMiddle), 
-    Auton("Tuning", Tuning),
+    Auton("Tuning", )
     Auton("Auton Skills", Auton_Skills),
   });
 
@@ -204,8 +203,11 @@ void opcontrol() {
    WingL.set(false); //Retract the left wing
    WingR.set(false); //Retract the right wing
 
+<<<<<<< HEAD
    Gif gif("/usd/WiggleMain.gif", lv_scr_act()); // Create a gif object
 
+=======
+>>>>>>> parent of fe0717f (gif-pros and fix code)
    while (true) {
 
     /////////////////////////////////////////////////////////////
