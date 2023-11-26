@@ -60,8 +60,8 @@ lemlib::Drivetrain_t drivetrain {
 
 
 //Future ODOM
-pros::Rotation rotVert(17, false); // 
-pros::Rotation rotHoriz(13, false); // 
+pros::Rotation rotVert(16, false); // 
+pros::Rotation rotHoriz(12, false); // 
 
 // uses "enc" as the encoder. 2.75" wheel diameter, 4.3" offset from tracking center, 1:1 gear ratio
 lemlib::TrackingWheel Horizontal_tracking(&rotVert, 2.75, 2.75, 1);
