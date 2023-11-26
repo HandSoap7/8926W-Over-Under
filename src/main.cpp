@@ -5,8 +5,8 @@
 #include "intake.hpp"
 #include "pistons.hpp"
 #include "lemlib/api.hpp"
-#include "AutonSelector/auton.hpp"
-#include "AutonSelector/sdcard.hpp"
+#include "EZ-Template/auton.hpp"
+#include "EZ-Template/sdcard.hpp"
 #include "gif-pros/gifclass.hpp"
 
 
