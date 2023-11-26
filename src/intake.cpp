@@ -10,7 +10,7 @@
 
 // Recoginition of both intake motors, brain ports, gearset (5.5w motors are fixed to 18),
 // which one is reversed (opposite sides), and what encoder units are being used (degrees)
-pros::Motor intake(15, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_DEGREES);
+pros::Motor intake(11, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_DEGREES);
 
 
 

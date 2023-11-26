@@ -26,6 +26,23 @@
                 "user_files": [],
                 "version": "2.1.2"
             },
+            "gif-pros": {
+                "location": "C:\\Users\\kobes\\AppData\\Roaming\\PROS\\templates\\gif-pros@2.1.1",
+                "metadata": {
+                    "origin": "local"
+                },
+                "name": "gif-pros",
+                "py/object": "pros.conductor.templates.local_template.LocalTemplate",
+                "supported_kernels": "^3.2.0",
+                "system_files": [
+                    "include\\gif-pros\\gifdec.h",
+                    "firmware\\gif-pros.a",
+                    "include\\gif-pros\\gifclass.hpp"
+                ],
+                "target": "v5",
+                "user_files": [],
+                "version": "2.1.1"
+            },
             "kernel": {
                 "location": "C:\\Users\\kobes\\AppData\\Roaming\\PROS\\templates\\kernel@3.8.0",
                 "metadata": {

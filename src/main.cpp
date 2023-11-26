@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <sys/types.h>
 #include "definitions.hpp"
+#include "gif-pros/gifclass.hpp"
 
 /////
 // For instalattion, upgrading, documentations and tutorials, check out website!
@@ -26,14 +27,14 @@
 Drive chassis (
   // Left Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  {-7, -8, -18}
+  {-7, -8, -20}
 
   // Right Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  ,{1, 3, 16}
+  ,{1, 3, 15}
 
   // IMU Port
-  ,15
+  ,14
 
   // Wheel Diameter (Remember, 4" wheels are actually 4.125!)
   //    (or tracking wheel diameter)
@@ -108,7 +109,7 @@ void initialize() {
     Auton("5 CLOSE Over", CloseMiddleOver),
     Auton("6 CLOSE OverWait", CloseMiddleOverWait),
     Auton("7 CLOSE TopMid", CloseTopMiddle), 
-    Auton("Tuning", )
+    Auton("Tuning", Tuning),
     Auton("Auton Skills", Auton_Skills),
   });
 
@@ -203,12 +204,9 @@ void opcontrol() {
    WingL.set(false); //Retract the left wing
    WingR.set(false); //Retract the right wing
 
-<<<<<<< HEAD
-   Gif gif("/usd/WiggleMain.gif", lv_scr_act()); // Create a gif object
+   //Gif gif("/usd/WiggleMain.gif", lv_scr_act()); // Create a gif object
 
-=======
->>>>>>> parent of fe0717f (gif-pros and fix code)
-   while (true) {
+   while (true) { 
 
     /////////////////////////////////////////////////////////////
     
@@ -219,7 +217,7 @@ void opcontrol() {
 
     chassis.tank(); // Will Drive
    
-    chassis.arcade_standard(ez::SPLIT); // Sarah Drive
+    //chassis.arcade_standard(ez::SPLIT); // Sarah Drive
 
 
     //////////////////////////////////////////////////////////////
