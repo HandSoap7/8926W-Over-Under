@@ -29,6 +29,7 @@ void initialize() {
     Auton("1 AWP", SuperSimpleAWP),
     Auton("2 FAR MidMid", SixBallMiddleMiddle),
     Auton("3 FAR MidTop", SixBallMiddleTop),
+    Auton("4 FAR Safe", SixBallSafe),
     Auton("4 CLOSE Over", CloseMiddleOver),
     Auton("5 CLOSE OverWait", CloseMiddleOverWait),
     Auton("6 CLOSE TopMid", CloseTopMiddle), 
@@ -154,10 +155,10 @@ void opcontrol() {
     int rightX = master.get_analog(RightX);
 
     //Willy Drive
-    LemChassis.tank(leftY, rightY, 1);
+    //LemChassis.tank(leftY, rightY, 1);
 
     //Sarah Drive
-    //LemChassis.arcade(leftY, rightX, 4);
+    LemChassis.arcade(leftY, rightX, 4);
 
     //Test Drive
     //xc                                 LemChassis.curvature(leftY, rightX, 2.5);

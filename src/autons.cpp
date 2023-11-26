@@ -35,9 +35,9 @@
 
 //Drive motors
 pros::Motor left_front_motor(7, pros::E_MOTOR_GEARSET_06, true); // port 7, blue gearbox, reversed
-pros::Motor left_middle_motor(18, pros::E_MOTOR_GEARSET_06, true); // port 17, blue gearbox, reversed
+pros::Motor left_middle_motor(20, pros::E_MOTOR_GEARSET_06, true); // port 17, blue gearbox, reversed
 pros::Motor left_back_motor(8, pros::E_MOTOR_GEARSET_06, true); // port 8, blue gearbox, reversed
-pros::Motor right_front_motor(16, pros::E_MOTOR_GEARSET_06, false); // port 16, blue gearbox, not reversed
+pros::Motor right_front_motor(15, pros::E_MOTOR_GEARSET_06, false); // port 16, blue gearbox, not reversed
 pros::Motor right_middle_motor(3, pros::E_MOTOR_GEARSET_06, false); // port 3, blue gearbox, not reversed
 pros::Motor right_back_motor(1, pros::E_MOTOR_GEARSET_06, false); // port 1, blue gearbox, not reversed
 

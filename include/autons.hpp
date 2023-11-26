@@ -12,6 +12,7 @@ extern pros::Imu Inertial_sensy;
 void SuperSimpleAWP();
 void SixBallMiddleMiddle();
 void SixBallMiddleTop();
+void SixBallSafe();
 void CloseMiddleOver();
 void CloseMiddleOverWait();
 void CloseTopMiddle();
