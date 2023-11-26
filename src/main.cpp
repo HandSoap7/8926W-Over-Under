@@ -204,7 +204,7 @@ void opcontrol() {
    WingL.set(false); //Retract the left wing
    WingR.set(false); //Retract the right wing
 
-   Gif gif("/usd/wiggleMenu.gif", lv_scr_act()); // Create a gif object
+   Gif gif("/usd/WiggleMain.gif", lv_scr_act()); // Create a gif object
 
    while (true) {
 
