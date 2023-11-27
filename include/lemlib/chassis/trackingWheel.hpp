@@ -54,7 +54,7 @@ class TrackingWheel {
          * @param distance distance between the tracking wheel and the center of rotation in inches
          * @param gearRatio gear ratio of the tracking wheel, defaults to 1
          */
-TrackingWheel(pros::Rotation* encoder, float wheelDiameter, float distance, float gearRatio = 1);
+        TrackingWheel(pros::Rotation* encoder, float wheelDiameter, float distance, float gearRatio = 1);
         /**
          * @brief Create a new tracking wheel
          *

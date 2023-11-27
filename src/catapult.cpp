@@ -31,9 +31,9 @@ void cata_move(int voltage){
 
 bool ManualOverride = false;
 bool FastFire = false;
-int CataStopDegree = 5600;
-int IntakeBlockDegree = 4250;
-int HangStopDegree = 2200;
+int CataStopDegree = 5300;
+int IntakeBlockDegree = 4300;
+int HangStopDegree = 2250;
 int UsuableStopDegree = IntakeBlockDegree;
 
 void FastFireState(bool state){

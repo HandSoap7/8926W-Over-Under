@@ -253,9 +253,9 @@ void AutonSelector::end() {
   gif_obj = lv_obj_create(lv_scr_act(), NULL);
   lv_obj_set_size(gif_obj, 480, 240);
   lv_obj_set_style(gif_obj, &lv_style_transp); // make the container invisible
-  lv_obj_align(gif_obj, NULL, LV_ALIGN_CENTER, 95, 0);
+  lv_obj_align(gif_obj, NULL, LV_ALIGN_CENTER, 63, 0);
 
-  //static Gif gif(const_cast<char*>(gif_path.c_str()), gif_obj);
+  static Gif gif(const_cast<char*>(gif_path.c_str()), gif_obj);
 
   autonLabel = lv_label_create(lv_scr_act(), NULL);
   lv_obj_set_hidden(autonLabel, true);
