@@ -280,10 +280,8 @@ void HighScoringShooting(){
   intake_coast();
   WingL.set(false);
   WingR.set(false);
-  intakeActuate.set(false);
 
   //start of auton
-  intakeActuate.set(true);    
   intake_in(450);    //outtake immediately to get rid of preloaded alliance ball
 
   chassis.set_drive_pid(46, DRIVE_SPEED, true);  //drive about 2/5 the way there
@@ -302,9 +300,7 @@ void HighScoringShooting(){
   pros::delay(250); //let triball settle
 
 
-  ManualOverride(true);
   pros::delay(400);
-  ManualOverride(false);
 
   chassis.set_swing_pid(ez::RIGHT_SWING, 0, TURN_SPEED);
   chassis.wait_drive();
@@ -328,9 +324,7 @@ void HighScoringShooting(){
 
   pros::delay(250);
 
-  ManualOverride(true);
   pros::delay(400);
-  ManualOverride(false);
 
   intake_in(400);
 
@@ -345,8 +339,6 @@ void AWPattempt(){
   intake_coast();
   WingL.set(false);
   WingR.set(false);
-  intakeActuate.set(false);
-  TaskState(true);
 
   intakeActuate.set(true);
   WingL.set(true);
@@ -510,8 +502,6 @@ void Auton_Skills(){
   intake_coast();
   WingL.set(false);
   WingR.set(false);
-  intakeActuate.set(false);
-  TaskState(false);
 
   intakeActuate.set(true);
 
@@ -523,7 +513,7 @@ void Auton_Skills(){
   intake_in(400);
   pros::delay(1000);
 
-  catapult_stop();
+  cata_move(0);
 
   pros::delay(200);
   chassis.reset_gyro(0);
@@ -546,7 +536,6 @@ void Auton_Skills(){
   chassis.set_drive_pid(-12, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  intakeActuate.set(true);
 
   chassis.set_swing_pid(ez::LEFT_SWING, -40, -DRIVE_SPEED);
   chassis.wait_drive();
