@@ -1,9 +1,3 @@
-/*
-This Source Code Form is subject to the terms of the Mozilla Public
-License, v. 2.0. If a copy of the MPL was not distributed with this
-file, You can obtain one at http://mozilla.org/MPL/2.0/.
-*/
-
 #pragma once
 
 #include <bits/stdc++.h>
@@ -22,7 +16,7 @@ namespace ez {
 /**
  * Prints our branding all over your pros terminal
  */
-void print_ez_template();
+void print_WIGGLE_template();
 
 /**
  * Prints to the brain screen in one string.  Splits input between lines with
