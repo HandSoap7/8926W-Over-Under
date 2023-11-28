@@ -8,6 +8,6 @@ void cata_move(int speed);
 
 void catapult_reload_rotation_task(void* param); // void* param is a pointer to a void (nothing) that is used to pass data to the task
 void RapidFire();
-void ManualOverride(bool state);
+void ManualOverrideState(bool state);
 void SetStopDegree(int State);
 void FastFireState(bool state);

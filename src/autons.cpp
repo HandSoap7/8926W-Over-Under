@@ -127,10 +127,8 @@ void SixBallSafe() {
   intakeHold();
   WingL.set(false);
   WingR.set(false);
-  intakeActuate.set(false);
 
   //start of auton
-  intakeActuate.set(true);
   intake_in(600);
 
   pros::delay(450);
@@ -251,7 +249,6 @@ void SixBallSafe() {
 
   chassis.set_drive_pid(32, DRIVE_SPEED, true);
   pros::delay(200);
-  intakeActuate.set(false);
   chassis.wait_drive();
 
   //go back and forth to knock triballs in
@@ -340,7 +337,6 @@ void AWPattempt(){
   WingL.set(false);
   WingR.set(false);
 
-  intakeActuate.set(true);
   WingL.set(true);
 
   intake_in(500);
@@ -446,15 +442,6 @@ void SixBallMiddleTop(){
 }
 
 
-void SixBallSafe(){
-  WingR.set(false);
-  WingL.set(false);
-  Blocker.set(false);
-  SetStopDegree(2);
-
-
-}
-
 
 void CloseMiddleOver(){
   WingR.set(false);
@@ -502,8 +489,6 @@ void Auton_Skills(){
   intake_coast();
   WingL.set(false);
   WingR.set(false);
-
-  intakeActuate.set(true);
 
 
   cata_move(12000);
@@ -559,7 +544,6 @@ void Auton_Skills(){
 
   pros::delay(200);
 
-  intakeActuate.set(false);
   WingL.set(true);
 
   chassis.set_turn_pid(-55, TURN_SPEED);
