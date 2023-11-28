@@ -111,7 +111,7 @@ void initialize() {
     //Auton("Tuning", Tuning),
     Auton("Auton Skills", Auton_Skills),
   });
-  
+
   master.clear();
 	pros::delay(50);
 	master.set_text(0, 0, "      YOU HAVE");
@@ -177,6 +177,10 @@ void autonomous() {
   chassis.reset_drive_sensor(); // Reset drive sensors to 0
   chassis.set_drive_brake(pros::E_MOTOR_BRAKE_HOLD); // Set motors to hold.  This helps autonomous consistency.
 
+
+  //SuperSimpleAWP();
+
+  // Run the selected auton
   ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
 }
 
