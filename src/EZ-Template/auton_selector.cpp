@@ -59,29 +59,6 @@ char* AutonSelector::generateAutonList() {
 }
 
 
-void AutonSelector::ImuInitializeGif(int gif_length, std::string gif_path){
-  Inertial_sensy.reset();
-  int iter = 0;
-
-  static Gif gif(const_cast<char*>(gif_path.c_str()), lv_scr_act());
-  
-  while (true) {
-    if (iter >= gif_length && !(Inertial_sensy.get_status() & pros::c::E_IMU_STATUS_CALIBRATING)) {
-      printf("IMU is done calibrating (took %d ms)\n", iter);
-      break;
-    }
-    else if (iter >= gif_length + 1000) {
-      printf("No IMU plugged in, (took %d ms to realize that)\n", iter);
-      break;
-    }
-    iter += 15;
-    pros::delay(15);
-  }
-  gif.clean();
-
-}
-
-
 lv_res_t btn_click_action(lv_obj_t * btn) {
 
   uint8_t id = lv_obj_get_free_num(btn);

@@ -111,10 +111,25 @@ void initialize() {
     //Auton("Tuning", Tuning),
     Auton("Auton Skills", Auton_Skills),
   });
+  
+  master.clear();
+	pros::delay(50);
+	master.set_text(0, 0, "      YOU HAVE");
+	pros::delay(50);
+	master.set_text(1, 0, "     NO ENEMIES");
 
-  // Initialize chassis and auton selector
-  chassis.initialize();
-  ez::as::initialize();
+	// Initialize chassis and auton selector
+	chassis.initialize(3500, "/usd/AircraftTakeoff.gif");
+	ez::as::initialize("/usd/whynotshine.gif", "/usd/WiggleMain.gif");
+
+	// Clear the LCD for the auton selector
+	pros::screen::erase();
+
+	master.clear();
+	pros::delay(50);
+	master.set_text(0, 0, ez::as::auton_selector.Autons[ez::as::auton_selector.selected_auton].Name);
+
+	pros::delay(200); // Wait for auton selector to finish
 }
 
 
