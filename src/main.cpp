@@ -102,14 +102,14 @@ void initialize() {
 
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.add_autons({
-     Auton("1 AWP", SuperSimpleAWP),
+    Auton("1 AWP", SuperSimpleAWP),
     Auton("2 FAR MidMid", SixBallMiddleMiddle),
-    Auton("3 FAR MidTop", SixBallMiddleTop),
+    //Auton("3 FAR MidTop", SixBallMiddleTop),
     Auton("4 FAR Safe", SixBallSafe),
-    Auton("5 CLOSE Over", CloseMiddleOver),
+    //Auton("5 CLOSE Over", CloseMiddleOver),
     Auton("6 CLOSE OverWait", CloseMiddleOverWait),
-    Auton("7 CLOSE TopMid", CloseTopMiddle), 
-    Auton("Tuning", Tuning),
+    // Auton("7 CLOSE TopMid", CloseTopMiddle), 
+    //Auton("Tuning", Tuning),
     Auton("Auton Skills", Auton_Skills),
   });
 
