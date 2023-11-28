@@ -8,7 +8,7 @@
 #include <set>
 #include "definitions.hpp"
 #include "gif-pros/gifclass.hpp"
-
+#include "EZ-Template/util.hpp"
 
 //LEM
 #include "lemlib/api.hpp"
@@ -16,9 +16,9 @@
 
 //Paths for Pure Pursuit
 
-//ASSET(testyty.txt);
-//ASSET(bar_txt);
-//ASSET(sillyskills_txt);
+ASSET(ClosePushOver1_txt);
+ASSET(ClosePushOver2_txt);
+ASSET(FarMiddleTop_txt);
 
 
 
@@ -138,6 +138,34 @@ lemlib::ChassisController_t angularController {
 lemlib::Chassis LemChassis(drivetrain, lateralController, angularController, sensors);
 
 
+
+
+void default_constants() {
+  chassis.set_slew_min_power(80, 80);
+  chassis.set_slew_distance(7, 7);
+  chassis.set_pid_constants(&chassis.headingPID, 11, 0, 20, 0);
+  chassis.set_pid_constants(&chassis.forward_drivePID, 0.45, 0, 5, 0);
+  chassis.set_pid_constants(&chassis.backward_drivePID, 0.45, 0, 5, 0);
+  chassis.set_pid_constants(&chassis.turnPID, 5, 0.003, 35, 15);
+  chassis.set_pid_constants(&chassis.swingPID, 7, 0, 45, 0);
+}
+
+void tuning_constants() {
+  chassis.set_slew_min_power(80, 80);
+  chassis.set_slew_distance(7, 7);
+  chassis.set_pid_constants(&chassis.headingPID, 11, 0, 20, 0);
+  chassis.set_pid_constants(&chassis.forward_drivePID, 0.45, 0, 5, 0);
+  chassis.set_pid_constants(&chassis.backward_drivePID, 0.45, 0, 5, 0);
+  chassis.set_pid_constants(&chassis.turnPID, 5, 0.003, 35, 15);
+  chassis.set_pid_constants(&chassis.swingPID, 7, 0, 45, 0);
+}
+
+void exit_condition_defaults() {
+  chassis.set_exit_condition(chassis.turn_exit, 50, 3, 500, 7, 500, 500);
+  chassis.set_exit_condition(chassis.swing_exit, 100, 3, 500, 7, 500, 500);
+  chassis.set_exit_condition(chassis.drive_exit, 80, 50, 300, 150, 500, 500);
+}
+
 //Screen for printing odom values
 
 void LemScreen() {
@@ -184,19 +212,24 @@ void SuperSimpleAWP(){
 
 
 
-  LemChassis.moveTo(0, -8, 0, 2000,false, false);
+  LemChassis.moveTo(0, -8, 0, 2000, false);
   WingR.set(true); 
+  LemChassis.waitUntilDone();
 
-  LemChassis.moveTo(0, -2, 0, 9999, false, false);
+  LemChassis.moveTo(0, -2, 0, 9999,  false);
+  LemChassis.waitUntilDone();
 
 
-  LemChassis.turnTo(-22, 40, 1200, false, false);
-  
+  LemChassis.turnTo(-22, 40, 1200, false); 
+  LemChassis.waitUntilDone();
+
   WingR.set(false);
 
-  LemChassis.moveTo(-12, 15, -30, 9999,false, true);
+  LemChassis.moveTo(-12, 15, -30, 9999, true);
+  LemChassis.waitUntilDone();
 
-  LemChassis.moveTo(-28, 32, -42, 9999, false, true);
+  LemChassis.moveTo(-28, 32, -42, 9999,  true);
+  LemChassis.waitUntilDone();
 
   Blocker.set(false);
 }
@@ -212,7 +245,7 @@ void SixBallMiddleMiddle(){
 
 
   intake_in(500);
-  LemChassis.moveTo(-6, 45,-8, 9999, false, true);
+  LemChassis.moveTo(-6, 45,-8, 9999, true);
   LemChassis.waitUntilDone();
 
 
@@ -222,7 +255,7 @@ void SixBallMiddleMiddle(){
   pros::delay(350);
 
   intake_in(500);
-  LemChassis.moveTo(-25, 55, -90, 9999, false, true);
+  LemChassis.moveTo(-25, 55, -90, 9999, true);
   LemChassis.waitUntilDone();
   pros::delay(50);
 
@@ -241,12 +274,12 @@ void SixBallMiddleMiddle(){
   WingL.set(false);
   
 
-  LemChassis.moveTo(-24, 32, -105, 9999, false, true);
+  LemChassis.moveTo(-24, 32, -105, 9999, true);
   LemChassis.waitUntilDone();
 
   pros::delay(250);
   
-  LemChassis.moveTo(11, 8, -300, 9999, false, true);
+  LemChassis.moveTo(11, 8, -300, 9999, true);
   LemChassis.waitUntilDone();
 
   intake_out(600);  
@@ -254,27 +287,27 @@ void SixBallMiddleMiddle(){
 
   intake_in(450); 
 
-  LemChassis.moveTo(-32, -5, -85, 9999, false, true);
+  LemChassis.moveTo(-32, -5, -85, 9999, true);
   LemChassis.waitUntilDone();
 
   pros::delay(350);
 
-  LemChassis.moveTo(3, -14, -275, 9999, false, true);
+  LemChassis.moveTo(3, -14, -275, 9999, true);
   LemChassis.waitUntilDone();
 
-  LemChassis.moveTo(17, -9, -315, 9999, false, true);
+  LemChassis.moveTo(17, -9, -315, 9999, true);
   LemChassis.waitUntilDone();
 
   LemChassis.turnTo(15, 50, 9999);
   LemChassis.waitUntilDone();
 
-  LemChassis.moveTo(30, 3, -355, 9999, false, true);
+  LemChassis.moveTo(30, 3, -355, 9999, true);
   LemChassis.waitUntilDone();
 
-  LemChassis.moveTo(30, 9.5, -355, 9999, false, true);
+  LemChassis.moveTo(30, 9.5, -355, 9999, true);
   LemChassis.waitUntilDone();
 
-  LemChassis.moveTo(30, 3, -355, 9999, false, true, 10);
+  LemChassis.moveTo(30, 3, -355, 9999, true, 10);
   LemChassis.waitUntilDone();
 
   }
@@ -318,8 +351,38 @@ void CloseMiddleOverWait(){
   WingR.set(false);
   WingL.set(false);
   Blocker.set(false);
-  SetStopDegree(2);
-  LemChassis.setPose(-53, -52, 315); // X: 5.2, Y: 10.333, Heading: 87
+  SetStopDegree(1);
+  LemChassis.setPose(0, 0, 0); // X: 5.2, Y: 10.333, Heading: 87
+  //Create a wait integer for 13.5 seconds + the current pros milliseconds time
+  int wait = pros::millis() + 13500;
+  printf("wait integer = %i \n pros millis at start = %i", wait, pros::millis());
+
+  intake_in(600);
+
+  LemChassis.moveTo(9, 46, 0, 9999, true);
+  LemChassis.waitUntilDone();
+
+
+  LemChassis.moveTo(6, 32, 45, 9999, true);
+  LemChassis.waitUntilDone();
+
+
+  //LemChassis.moveTo(24.25, 41, 87, 9999, true);
+
+  //LemChassis.waitUntil(10);
+  intake_out(600);
+
+  //LemChassis.waitUntilDone();
+
+
+
+  //LemChassis.moveTo(-6, 45,-8, 9999, true);
+
+  //LemChassis.follow(ClosePushOver2_txt, 3, 9999, true);
+
+  while (pros::millis() < wait){
+    pros::delay(10);
+  }
 
 
 }

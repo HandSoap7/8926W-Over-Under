@@ -12,6 +12,54 @@
 
 //#include "lemlib/api.hpp"
 
+
+// Chassis constructor
+Drive chassis (
+  // Left Chassis Ports (negative port will reverse it!)
+  //   the first port is the sensored port (when trackers are not used!)
+  {-7, -8, 19}
+
+  // Right Chassis Ports (negative port will reverse it!)
+  //   the first port is the sensored port (when trackers are not used!)
+  ,{1, 3 , 15}
+
+  // IMU Port
+  ,14
+
+  // Wheel Diameter (Remember, 4" wheels are actually 4.125!)
+  //    (or tracking wheel diameter)
+  ,2.746
+
+  // Cartridge RPM
+  //   (or tick per rotation if using tracking wheels)
+  ,600
+
+  // External Gear Ratio (MUST BE DECIMAL)
+  //    (or gear ratio of tracking wheel)
+  // eg. if your drive is 84:36 where the 36t is powered, your RATIO would be 2.333.
+  // eg. if your drive is 36:60 where the 60t is powered, your RATIO would be 0.6.
+  ,1.35
+
+  // Uncomment if using tracking wheels
+  /*
+  // Left Tracking Wheel Ports (negative port will reverse it!)
+  // ,{1, 2} // 3 wire encoder
+  // ,8 // Rotation sensor
+
+  // Right Tracking Wheel Ports (negative port will reverse it!)
+  // ,{-3, -4} // 3 wire encoder
+  // ,-9 // Rotation sensor
+  */
+
+  // Uncomment if tracking wheels are plugged into a 3 wire expander
+  // 3 Wire Port Expander Smart Port
+  // ,1
+);
+
+
+
+
+
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *  
@@ -23,6 +71,9 @@ void initialize() {
   ez::print_WIGGLE_template();
   // print odom values to the brain
   //pros::Task odomScreenTask(LemScreen);
+  default_constants(); // Set the drive to your own constants from autons.cpp!
+  exit_condition_defaults(); // Set the exit conditions to your own constants from autons.cpp!
+
 
 
   ez::as::auton_selector.add_autons({
@@ -45,11 +96,12 @@ void initialize() {
 	master.set_text(1, 0, "     THIS DUBYA");
   
   LemChassis.calibrate(); // calibrate sensors
-  //ez::as::auton_selector.ImuInitializeGif(3300, "/usd/AircraftTakeoff.gif");
+  chassis.initialize();
+  ez::as::auton_selector.ImuInitializeGif(3300, "/usd/AircraftTakeoff.gif");
   //ez::as::auton_selector.ImuInitializeGif(5250, "/usd/NeverBackDown.gif"); //Sarah
 
   //printf("imu initialized and startup gif shown\n")
-  //ez::as::initialize( "/usd/whynotshine.gif", "/usd/WiggleMain.gif");
+  ez::as::initialize( "/usd/whynotshine.gif", "/usd/WiggleMain.gif");
   //ez::as::initialize( "/usd/WiggleAuton.gif", "/usd/SFWdancingdog.gif");    //Sarah
   pros::screen::erase();
 
@@ -116,7 +168,7 @@ void autonomous() {
         }
     }); //*/
   ChassisCoast();
-  SixBallMiddleMiddle();
+  SuperSimpleAWP();
   //ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
 }
 

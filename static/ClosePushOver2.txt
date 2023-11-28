@@ -1,0 +1,41 @@
+-8, -5, 30.113
+-9.978, -5.263, 20
+-11.859, -5.933, 20
+-13.62, -6.88, 21.242
+-15.267, -8.012, 44.759
+-16.832, -9.257, 66.985
+-18.321, -10.591, 87.307
+-19.759, -11.981, 100
+-21.148, -13.42, 100
+-22.503, -14.891, 100
+-23.832, -16.386, 100
+-25.139, -17.899, 100
+-26.429, -19.428, 99.685
+-27.707, -20.966, 97.104
+-28.976, -22.512, 94.452
+-30.241, -24.061, 91.723
+-31.505, -25.611, 88.911
+-32.769, -27.161, 86.007
+-34.038, -28.707, 83.001
+-35.312, -30.248, 79.882
+-36.596, -31.782, 76.637
+-37.891, -33.306, 73.247
+-39.201, -34.818, 69.693
+-40.527, -36.315, 65.948
+-41.872, -37.795, 61.977
+-43.239, -39.254, 57.734
+-44.634, -40.688, 53.152
+-46.056, -42.094, 48.137
+-47.511, -43.466, 42.535
+-49.001, -44.8, 36.073
+-50.529, -46.09, 28.166
+-52.1, -47.327, 16.893
+-53, -48, 0
+-53, -48, 0
+-69.016, -59.979, 0
+endData
+127
+100
+200
+-8, -5, -20, -5, -35, -35, -53, -48
+#PATH.JERRYIO-DATA {"appVersion":"0.4.1","format":"LemLib v0.4.x (inch, byte-voltage)","gc":{"robotWidth":11.811023622047244,"robotHeight":11.811023622047244,"robotIsHolonomic":false,"showRobot":true,"uol":2.54,"pointDensity":2,"controlMagnetDistance":0.7750015500031,"fieldImage":{"displayName":"VRC 2024 - Over Under","signature":"VRC 2024 - Over Under","origin":{"__type":"built-in"}}},"paths":[{"segments":[{"controls":[{"uid":"7x67MQJGCk","x":-8,"y":-5,"lock":false,"visible":true,"heading":90,"__type":"end-point"},{"uid":"516kOsZGzm","x":-20,"y":-5,"lock":false,"visible":true,"__type":"control"},{"uid":"1Al8oxLe8F","x":-35,"y":-35,"lock":false,"visible":true,"__type":"control"},{"uid":"yod4MhT0LS","x":-53,"y":-48,"lock":false,"visible":true,"heading":230,"__type":"end-point"}],"speedProfiles":[],"uid":"EgNrqrEHnB"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":20,"to":100},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":4,"label":"4"},"step":0.01,"from":1.4,"to":1.8},"maxDecelerationRate":127},"name":"Path","uid":"atMQfPaCZ5","lock":false,"visible":true}]}

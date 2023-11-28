@@ -23,6 +23,10 @@ void Auton_Skills();
 //LEM library
 void LemScreen();
 
+void default_constants();
+void tuning_constants();
+void exit_condition_defaults();
+
 
 void ChassisCoast();
 void ChassisHold();
