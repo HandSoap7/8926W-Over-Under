@@ -47,7 +47,7 @@ Drive chassis (
   //    (or gear ratio of tracking wheel)
   // eg. if your drive is 84:36 where the 36t is powered, your RATIO would be 2.333.
   // eg. if your drive is 36:60 where the 60t is powered, your RATIO would be 0.6.
-  ,1.345
+  ,1.38
 
   // Uncomment if using tracking wheels
   /*
@@ -178,10 +178,10 @@ void autonomous() {
   chassis.set_drive_brake(pros::E_MOTOR_BRAKE_HOLD); // Set motors to hold.  This helps autonomous consistency.
 
 
-  //SuperSimpleAWP();
+  CloseMidRush();
 
   // Run the selected auton
-  ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
+  //ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
 }
 
 

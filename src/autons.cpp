@@ -332,7 +332,8 @@ void HighScoringShooting(){
   chassis.wait_drive();
 }
 
-void AWPattempt(){
+void CloseMidRush(){
+  int waitTime = pros::millis() + 13500;
   intake_coast();
   WingL.set(false);
   WingR.set(false);
@@ -378,15 +379,6 @@ void AWPattempt(){
   chassis.set_turn_pid(130, TURN_SPEED);
   chassis.wait_drive();
 
-  chassis.set_drive_pid(-8, DRIVE_SPEED, true);
-  chassis.wait_drive();
-
-  chassis.set_swing_pid(RIGHT_SWING, 165, -DRIVE_SPEED);
-  chassis.wait_drive();
-
-  chassis.set_drive_pid(-7, DRIVE_SPEED, true);
-  chassis.wait_drive();
-
   chassis.set_drive_pid(18, DRIVE_SPEED, true);
   chassis.wait_drive();
 
@@ -401,13 +393,23 @@ void AWPattempt(){
   chassis.set_swing_pid(RIGHT_SWING, 85, DRIVE_SPEED);
   chassis.wait_drive();
 
-
-
-  chassis.set_drive_pid(36.5, 120);
-  pros::delay(300);
   WingR.set(false);
+
+  while (pros::millis() < waitTime){
+    pros::delay(10);
+  }
+
+  chassis.set_turn_pid(90, TURN_SPEED);
+  chassis.wait_drive();
+
+  chassis.set_drive_pid(40, DRIVE_SPEED, true);
   intake_out(600);
   chassis.wait_drive();
+
+  chassis.set_drive_pid(-30, DRIVE_SPEED, true);
+  chassis.wait_drive();
+
+  chassis.set_turn_pid(-90, TURN_SPEED);
 }
 
 
