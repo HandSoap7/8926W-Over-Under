@@ -26,7 +26,7 @@
 Drive chassis (
   // Left Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  {-7, -8, -20}
+  {-7, -8, -19}
 
   // Right Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
@@ -101,12 +101,12 @@ void initialize() {
 
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.add_autons({
-    Auton("1 AWP", SuperSimpleAWP),
-    Auton("2 FAR MidMid", SixBallMiddleMiddle),
+    Auton("1 CLOSE Over", CloseMidRush),
+    Auton("2 AWP", SuperSimpleAWP),
+    //Auton("2 FAR MidMid", SixBallMiddleMiddle),
     //Auton("3 FAR MidTop", SixBallMiddleTop),
-    Auton("4 FAR Safe", SixBallSafe),
-    //Auton("5 CLOSE Over", CloseMiddleOver),
-    Auton("6 CLOSE OverWait", CloseMiddleOverWait),
+    Auton("3 FAR Safe", SixBallSafe),
+    Auton("4 CLOSE AWP part", CloseMiddleOverTouchHang),
     // Auton("7 CLOSE TopMid", CloseTopMiddle), 
     //Auton("Tuning", Tuning),
     Auton("Auton Skills", Auton_Skills),
@@ -114,9 +114,9 @@ void initialize() {
 
   master.clear();
 	pros::delay(50);
-	master.set_text(0, 0, "      YOU HAVE");
+	master.set_text(0, 0, "      LETS GET");
 	pros::delay(50);
-	master.set_text(1, 0, "     NO ENEMIES");
+	master.set_text(1, 0, "     THIS DUBYA");
 
 	// Initialize chassis and auton selector
 	chassis.initialize(3500, "/usd/AircraftTakeoff.gif");
@@ -178,10 +178,10 @@ void autonomous() {
   chassis.set_drive_brake(pros::E_MOTOR_BRAKE_HOLD); // Set motors to hold.  This helps autonomous consistency.
 
 
-  CloseMidRush();
+  //SixBallSafe();
 
   // Run the selected auton
-  //ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
+  ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
 }
 
 
@@ -216,7 +216,7 @@ void opcontrol() {
 
    SetStopDegree(1); //Set cata stop to intake blocking (best for intaking)
 
-   OdomRetraction.set(true); //Retract the horizontal odom wheel
+   //OdomRetraction.set(true); //Retract the horizontal odom wheel
    Blocker.set(false); //Lower the blocker
    AuxHang.set(false); //Don't deploy auxHang
    WingL.set(false); //Retract the left wing
@@ -250,13 +250,13 @@ void opcontrol() {
     }
 
     //Catapult switches to Hang Mode
-    else if (master.get_digital(A)) {
+    else if (master.get_digital(X)) {
       SetStopDegree(3);
     }
 
-    else if (master.get_digital(X)) {
-      SetStopDegree(2);
-    }
+    //else if (master.get_digital(X)) {
+      //SetStopDegree(2);
+    //}
 
     //If needed to switch back to Normal Cata Rack Position
     else if (master.get_digital(B)) {
@@ -284,13 +284,13 @@ void opcontrol() {
     //////////////////////////////////////////////////////////////
 
     //intake into the robot if L2 is being pressed
-    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
       intake_in(600);
       //pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, "."); 
     }
 
     //intake into the robot if R2 is being pressed
-    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
      intake_out(600);
     }
 
