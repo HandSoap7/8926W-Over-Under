@@ -199,6 +199,8 @@ void SixBallSafe() {
 
   pros::delay(150);
 
+  intake_out(0);
+
   //backup toawrds matchloader
   chassis.set_drive_pid(-37, DRIVE_SPEED, true);
   chassis.wait_drive();
@@ -222,24 +224,24 @@ void SixBallSafe() {
   chassis.set_turn_pid(-75, TURN_SPEED);
   chassis.wait_drive();
 
-  chassis.set_drive_pid(-22, DRIVE_SPEED, true);
+  chassis.set_drive_pid(-20, DRIVE_SPEED, true);
   chassis.wait_until(1);
 
   //backup and turn towards triball near the post
   chassis.set_drive_pid(12, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  chassis.set_turn_pid(100, TURN_SPEED);
+  chassis.set_turn_pid(105, TURN_SPEED);
   chassis.wait_drive();
 
   intake_out(600);
 
   pros::delay(300);
 
-  chassis.set_drive_pid(24, 127, true);
-  chassis.wait_until(2);
+  chassis.set_drive_pid(35, 127, true);
+  chassis.wait_until(12);
 
-  chassis.set_drive_pid(-18, DRIVE_SPEED, true);
+  chassis.set_drive_pid(-14, DRIVE_SPEED, true);
 
   chassis.set_turn_pid(2, TURN_SPEED);
   chassis.wait_drive();
@@ -292,7 +294,7 @@ void SixBallSafe() {
   intake_out(600);
 
   chassis.set_drive_pid(100, 127, true);
-  chassis.wait_until(30);
+  chassis.wait_until(34);
 
   //go back and forth to knock triballs in
 
@@ -563,9 +565,9 @@ void Auton_Skills(){
 
   
   FastFireState(true);
-  pros::delay(1000); //29000
+  pros::delay(29000); //29000
   intake_out(200);
-  pros::delay(1000); //4000 msec
+  pros::delay(3000); //4000 msec
   intake_in(400);
   pros::delay(1000);
 
@@ -581,7 +583,7 @@ void Auton_Skills(){
 
   intake_out(600);
 
-  chassis.set_turn_pid(34, TURN_SPEED);
+  chassis.set_turn_pid(32, TURN_SPEED);
   chassis.wait_drive();
 
   chassis.set_drive_pid(-98, DRIVE_SPEED, true);
@@ -597,8 +599,8 @@ void Auton_Skills(){
   chassis.set_swing_pid(ez::LEFT_SWING, -37, -DRIVE_SPEED);
   chassis.wait_drive();
 
-  chassis.set_drive_pid(-50, DRIVE_SPEED, true);
-  chassis.wait_until(1);
+  chassis.set_drive_pid(-30, DRIVE_SPEED, true);
+  pros::delay(500);
 
   chassis.set_turn_pid(-60, TURN_SPEED); 
   chassis.wait_drive();
@@ -634,17 +636,11 @@ void Auton_Skills(){
   chassis.set_drive_pid(100, DRIVE_SPEED, true);
   chassis.wait_until(10);
 
-  WingR.set(false);
-  WingL.set(false);
-
   chassis.set_drive_pid(-10, 127, true);
   chassis.wait_drive();
 
-  WingL.set(true);
-
   chassis.set_drive_pid(100, 127);
   chassis.wait_until(12);
-
 
   chassis.set_turn_pid(0, TURN_SPEED);
   chassis.wait_drive();
@@ -675,14 +671,11 @@ void Auton_Skills(){
   chassis.wait_drive();
 
   chassis.set_drive_pid(50, DRIVE_SPEED, true);
-  chassis.wait_until(14);
+  chassis.wait_until(10);
 
 
   chassis.set_turn_pid(0, TURN_SPEED);
   chassis.wait_drive();
-
-  WingR.set(false);
-  WingL.set(false);
 
   chassis.set_drive_pid(-20, 127, true);
   chassis.wait_drive();
@@ -702,10 +695,10 @@ void Auton_Skills(){
   
   WingL.set(false);
 
-  chassis.set_turn_pid(-60, 115);
+  chassis.set_turn_pid(-50, 115);
   chassis.wait_drive();
 
-  chassis.set_drive_pid(50, DRIVE_SPEED, true);
+  chassis.set_drive_pid(60, DRIVE_SPEED, true);
   chassis.wait_drive();
 
   chassis.set_swing_pid(LEFT_SWING, 45, DRIVE_SPEED);
@@ -713,20 +706,22 @@ void Auton_Skills(){
 
   WingR.set(false);
 
-  chassis.set_drive_pid(6, DRIVE_SPEED, true);
+  chassis.set_drive_pid(12, DRIVE_SPEED, true);
   chassis.wait_drive();
 
   chassis.set_swing_pid(LEFT_SWING, 90, DRIVE_SPEED);
   chassis.wait_drive();
 
-  chassis.set_drive_pid(100, DRIVE_SPEED, true);
+  chassis.set_drive_pid(100, 127, true);
   chassis.wait_until(6);
 
-  chassis.set_drive_pid(-100, DRIVE_SPEED, true);
-  chassis.wait_until(2);
+  chassis.set_drive_pid(-8, 127, true);
+  chassis.wait_drive();
 
-  chassis.set_drive_pid(100, DRIVE_SPEED, true);
-  chassis.wait_until(2);
+  chassis.set_drive_pid(50, 127, true);
+  chassis.wait_until(4);
+
+  pros::delay(300);
 
   chassis.set_drive_pid(-100, DRIVE_SPEED, true);
   chassis.wait_until(1);

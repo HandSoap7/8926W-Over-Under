@@ -178,7 +178,7 @@ void autonomous() {
   chassis.set_drive_brake(pros::E_MOTOR_BRAKE_HOLD); // Set motors to hold.  This helps autonomous consistency.
 
 
-  //SixBallSafe();
+  //Auton_Skills();
 
   // Run the selected auton
   ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.

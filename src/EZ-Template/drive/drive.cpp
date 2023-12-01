@@ -261,6 +261,8 @@ bool Drive::imu_calibrate(int gif_length, std::string gif_path) {
   while (true) {
     if (iter >= gif_length && !(imu.get_status() & pros::c::E_IMU_STATUS_CALIBRATING)) {
       printf("IMU is done calibrating (took %d ms)\n", iter);
+      gif.clean();
+
       break;
     }
     else if (iter >= gif_length + 1000) {
@@ -271,6 +273,8 @@ bool Drive::imu_calibrate(int gif_length, std::string gif_path) {
     pros::delay(util::DELAY_TIME);
   }
   gif.clean();
+
+  printf("gif should be cleaned");
   master.rumble(".");
   return true;
 }
