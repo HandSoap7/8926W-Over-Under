@@ -178,10 +178,11 @@ void autonomous() {
   chassis.set_drive_brake(pros::E_MOTOR_BRAKE_HOLD); // Set motors to hold.  This helps autonomous consistency.
 
 
-  //Auton_Skills();
+  //SuperSimpleAWP();
+  Auton_Skills();
 
   // Run the selected auton
-  ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
+  //ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
 }
 
 
@@ -233,9 +234,9 @@ void opcontrol() {
     //////////////////////////////////////////////////////////////
     
 
-    chassis.tank(); // Will Drive
+    //chassis.tank(); // Will Drive
    
-    //chassis.arcade_standard(ez::SPLIT); // Sarah Drive
+    chassis.arcade_standard(ez::SPLIT); // Sarah Drive
 
 
     //////////////////////////////////////////////////////////////

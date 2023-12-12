@@ -390,11 +390,11 @@ void CloseMidRush(){
   chassis.set_turn_pid(78, TURN_SPEED);
   chassis.wait_drive();
 
-  chassis.set_drive_pid(20, DRIVE_SPEED, true);
+  chassis.set_drive_pid(21, DRIVE_SPEED, true);
   intake_out(600);
   
   WingL.set(true);
-  chassis.wait_until(15);
+  chassis.wait_until(16);
   
 
   //reset imu to 0 heading
@@ -409,10 +409,10 @@ void CloseMidRush(){
   chassis.wait_drive();
 
   
-  chassis.set_drive_pid(-62, DRIVE_SPEED, true);
+  chassis.set_drive_pid(-68, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  chassis.set_turn_pid(133, TURN_SPEED);
+  chassis.set_turn_pid(125, TURN_SPEED);
   chassis.wait_drive();
 
   WingR.set(true);
@@ -434,17 +434,17 @@ void CloseMidRush(){
   chassis.set_turn_pid(88, TURN_SPEED);
   chassis.wait_drive();
 
-  chassis.set_drive_pid(40, DRIVE_SPEED, true);
+  chassis.set_drive_pid(43, DRIVE_SPEED, true);
   intake_out(600);
   chassis.wait_drive();
 
   chassis.set_turn_pid(82, TURN_SPEED);
   chassis.wait_drive();
 
-  chassis.set_drive_pid(-48, DRIVE_SPEED, true);
+  chassis.set_drive_pid(-46, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  chassis.set_turn_pid(220, TURN_SPEED);
+  chassis.set_turn_pid(140, TURN_SPEED);
   chassis.wait_drive();
   
   chassis.set_drive_pid(4, DRIVE_SPEED);
@@ -565,7 +565,7 @@ void Auton_Skills(){
 
   
   FastFireState(true);
-  pros::delay(29000); //29000
+  pros::delay(27000); //29000
   intake_out(200);
   pros::delay(3000); //4000 msec
   intake_in(400);
@@ -634,7 +634,7 @@ void Auton_Skills(){
   chassis.wait_drive();
 
   chassis.set_drive_pid(100, DRIVE_SPEED, true);
-  chassis.wait_until(10);
+  chassis.wait_until(2);
 
   chassis.set_drive_pid(-10, 127, true);
   chassis.wait_drive();
@@ -713,7 +713,7 @@ void Auton_Skills(){
   chassis.wait_drive();
 
   chassis.set_drive_pid(100, 127, true);
-  chassis.wait_until(6);
+  chassis.wait_until(2);
 
   chassis.set_drive_pid(-8, 127, true);
   chassis.wait_drive();
