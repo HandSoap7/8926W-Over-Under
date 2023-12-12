@@ -71,8 +71,6 @@ void initialize() {
   ez::print_WIGGLE_template();
   // print odom values to the brain
   //pros::Task odomScreenTask(LemScreen);
-  default_constants(); // Set the drive to your own constants from autons.cpp!
-  exit_condition_defaults(); // Set the exit conditions to your own constants from autons.cpp!
 
 
 
@@ -168,8 +166,8 @@ void autonomous() {
         }
     }); //*/
   ChassisCoast();
-  SuperSimpleAWP();
-  //ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
+ // SuperSimpleAWP();
+  ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
 }
 
 

@@ -223,7 +223,7 @@ void AutonSelector::create() {
   lv_label_set_text(skillsLabel, "GO CRAZY?");
 
   confirmLabel = lv_label_create(confirm, NULL);
-  lv_label_set_text(confirmLabel, "Aprove");
+  lv_label_set_text(confirmLabel, "Approve");
 
   while (auton == -1) {
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) && master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
