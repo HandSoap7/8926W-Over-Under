@@ -120,7 +120,7 @@ void initialize() {
 
 	// Initialize chassis and auton selector
 	chassis.initialize(3500, "/usd/AircraftTakeoff.gif");
-	ez::as::initialize("/usd/whynotshine.gif", "/usd/WiggleMain.gif");
+	//ez::as::initialize("/usd/whynotshine.gif", "/usd/WiggleMain.gif");
 
 	// Clear the LCD for the auton selector
 	pros::screen::erase();
@@ -179,7 +179,8 @@ void autonomous() {
 
 
   //SuperSimpleAWP();
-  Auton_Skills();
+  //Auton_Skills();
+  SixBallSafe();
 
   // Run the selected auton
   //ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
@@ -234,9 +235,9 @@ void opcontrol() {
     //////////////////////////////////////////////////////////////
     
 
-    //chassis.tank(); // Will Drive
+    chassis.tank(); // Will Drive
    
-    chassis.arcade_standard(ez::SPLIT); // Sarah Drive
+    //chassis.arcade_standard(ez::SPLIT); // Sarah Drive
 
 
     //////////////////////////////////////////////////////////////

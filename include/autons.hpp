@@ -25,4 +25,5 @@ void CloseMiddleOverTouchHang();
 void CloseMidRush();
 void Auton_Skills();
 
-void Tuning();
+
+void EZ_Tune();

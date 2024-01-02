@@ -32,8 +32,8 @@ void cata_move(int voltage){
 bool ManualOverride = false;
 bool FastFire = false;
 int CataStopDegree = 5500;
-int IntakeBlockDegree = 4050;
-int HangStopDegree = 2800;
+int IntakeBlockDegree = 3850;
+int HangStopDegree = 2450;
 int UsuableStopDegree = IntakeBlockDegree;
 
 void FastFireState(bool state){
@@ -69,7 +69,7 @@ void catapult_reload_rotation_task(void* param) {
     //printf("Stop Degree is %i /n", UsuableStopDegree);
 
     if (FastFire==true){
-      cata_move(12000);
+      cata_move(11000);
       }
     else{
       //Hard stop Degree is around 10100 millidegrees, The stop degree is atleast 10000 millidegrees
@@ -79,10 +79,11 @@ void catapult_reload_rotation_task(void* param) {
       } 
       else {
         cata_move(0);
+        printf("Rot degree = %i\n", catapult_rotation.get_angle());
       }
 
       }
-    pros::delay(100);
+    pros::delay(10);
   }
 }
 
