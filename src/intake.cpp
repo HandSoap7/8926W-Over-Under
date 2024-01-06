@@ -20,8 +20,8 @@ pros::Motor intake(11, pros::E_MOTOR_GEARSET_06, true, pros::E_MOTOR_ENCODER_DEG
 // Sets both motors to positive max power (200)
 void intake_in(int rpm) {
   intake.move_velocity(rpm);
-
 }
+
 
 // intake out of the robot
 // Sets both motors to negative max power (-200)

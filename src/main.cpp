@@ -181,6 +181,7 @@ void autonomous() {
   //SuperSimpleAWP();
   //Auton_Skills();
   SixBallSafe();
+  //ClosePushOver();
 
   // Run the selected auton
   //ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.

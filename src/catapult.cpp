@@ -33,7 +33,7 @@ bool ManualOverride = false;
 bool FastFire = false;
 int CataStopDegree = 5500;
 int IntakeBlockDegree = 3850;
-int HangStopDegree = 2450;
+int HangStopDegree = 2850;
 int UsuableStopDegree = IntakeBlockDegree;
 
 void FastFireState(bool state){
@@ -83,7 +83,7 @@ void catapult_reload_rotation_task(void* param) {
       }
 
       }
-    pros::delay(10);
+    pros::delay(20);
   }
 }
 
