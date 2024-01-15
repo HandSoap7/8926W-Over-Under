@@ -1,5 +1,5 @@
 #include "autons.hpp"
-#include "catapult.hpp"
+#include "puncher.hpp"
 #include "intake.hpp"
 #include "main.h"
 #include "pistons.hpp"
@@ -8,7 +8,6 @@
 #include <set>
 #include "definitions.hpp"
 #include "gif-pros/gifclass.hpp"
-#include "EZ-Template/util.hpp"
 
 //LEM
 #include "lemlib/api.hpp"
@@ -34,9 +33,9 @@ ASSET(FarMiddleTop_txt);
 
 
 //Drive motors
-pros::Motor left_front_motor(7, pros::E_MOTOR_GEARSET_06, true); // port 7, blue gearbox, reversed
-pros::Motor left_middle_motor(19, pros::E_MOTOR_GEARSET_06, true); // port 17, blue gearbox, reversed
-pros::Motor left_back_motor(8, pros::E_MOTOR_GEARSET_06, true); // port 8, blue gearbox, reversed
+pros::Motor left_front_motor(7, pros::E_MOTOR_GEARSET_06, false); // port 7, blue gearbox, reversed
+pros::Motor left_middle_motor(19, pros::E_MOTOR_GEARSET_06, false); // port 17, blue gearbox, reversed
+pros::Motor left_back_motor(8, pros::E_MOTOR_GEARSET_06, false); // port 8, blue gearbox, reversed
 pros::Motor right_front_motor(15, pros::E_MOTOR_GEARSET_06, false); // port 16, blue gearbox, not reversed
 pros::Motor right_middle_motor(3, pros::E_MOTOR_GEARSET_06, false); // port 3, blue gearbox, not reversed
 pros::Motor right_back_motor(1, pros::E_MOTOR_GEARSET_06, false); // port 1, blue gearbox, not reversed
@@ -53,14 +52,14 @@ lemlib::Drivetrain drivetrain {
     &LeftyMotors, // left drivetrain motors
     &RightyMotors, // right drivetrain motors
     11.6, // track width
-    lemlib::Omniwheel::NEW_275, // wheel diameter
+    lemlib::Omniwheel::NEW_325, // wheel diameter
     450, // wheel rpm
     4 //Chase Power
 };
 
 
 //Future ODOM
-pros::Rotation rotVert(16, true); // 
+pros::Rotation rotVert(16, false); // 
 pros::Rotation rotHoriz(12, false); // 
 
 // uses "enc" as the encoder. 2.75" wheel diameter, 4.3" offset from tracking center, 1:1 gear ratio
@@ -83,13 +82,15 @@ lemlib::OdomSensors sensors {
 
 // forward/backward PID
 lemlib::ControllerSettings lateralController {
-    35, // kP 10 35
-    175, // kD 30 177
+    10, // kP
+    0, // kI
+    30, // kD
+    0, // AntiWindup
     1, // smallErrorRange
     100, // smallErrorTimeout
     3, // largeErrorRange
     500, // largeErrorTimeout
-    10 // slew rate
+    20 // slew rate
 };
 
 
@@ -97,13 +98,15 @@ lemlib::ControllerSettings lateralController {
 
 // turning PID
 lemlib::ControllerSettings angularController {
-    8, // kP 8 14
-    65, // kD 65 115
+    2, // kP 8 14
+    0, // kI
+    10, // kD 65 115
+    0, // AntiWindup
     1, // smallErrorRange
     100, // smallErrorTimeout
     3, // largeErrorRange
     500, // largeErrorTimeout
-    10 // slew rate
+    0 // slew rate
 };
 
 
@@ -134,8 +137,51 @@ lemlib::ChassisController_t angularController {
 */
 
 
-// create the chassis
-lemlib::Chassis LemChassis(drivetrain, lateralController, angularController, sensors);
+// create the chassis (MAIN FUNCTION)
+lemlib::Chassis LemChassis(drivetrain, lateralController, angularController, sensors, 0);
+
+
+
+
+
+void LemScreen() {
+    // loop forever
+    while (true) {
+        lemlib::Pose pose = LemChassis.getPose(); // get the current position of the robot
+        pros::lcd::print(0, "x: %f", pose.x); // print the x position
+        pros::lcd::print(1, "y: %f", pose.y); // print the y position
+        pros::lcd::print(2, "heading: %f", pose.theta); // print the heading
+        pros::delay(10);
+    }
+}
+
+
+void ChassisCoast(){
+  LeftyMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
+  RightyMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
+}
+
+void ChassisHold(){
+  LeftyMotors.set_brake_modes(pros::E_MOTOR_BRAKE_HOLD);
+  RightyMotors.set_brake_modes(pros::E_MOTOR_BRAKE_HOLD);
+}
+
+
+
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////
+
+//EZ TEMPLATE
+
+///////////////////////////////////////////////////////////////////////
+
+
 
 
 
@@ -166,30 +212,6 @@ void exit_condition_defaults() {
   chassis.set_exit_condition(chassis.drive_exit, 80, 50, 300, 150, 500, 500);
 }
 
-//Screen for printing odom values
-
-void LemScreen() {
-    // loop forever
-    while (true) {
-        lemlib::Pose pose = LemChassis.getPose(); // get the current position of the robot
-        pros::lcd::print(0, "x: %f", pose.x); // print the x position
-        pros::lcd::print(1, "y: %f", pose.y); // print the y position
-        pros::lcd::print(2, "heading: %f", pose.theta); // print the heading
-        pros::delay(10);
-    }
-}
-
-
-void ChassisCoast(){
-  LeftyMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
-  RightyMotors.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
-}
-
-void ChassisHold(){
-  LeftyMotors.set_brake_modes(pros::E_MOTOR_BRAKE_HOLD);
-  RightyMotors.set_brake_modes(pros::E_MOTOR_BRAKE_HOLD);
-}
-
 
 
 
@@ -203,49 +225,38 @@ void ChassisHold(){
 
 
 void SuperSimpleAWP(){
-
-  WingR.set(false);
-  WingL.set(false);
-  Blocker.set(true);
-  SetStopDegree(2);
   LemChassis.setPose(0, 0, 0); // X: 5.2, Y: 10.333, Heading: 87
 
 
 
-  LemChassis.moveTo(0, -8, 0, 2000, false);
-  WingR.set(true); 
+  LemChassis.moveToPose(0, -8, 0, 2000);
+  VertWingR.set(true); 
   LemChassis.waitUntilDone();
 
-  LemChassis.moveTo(0, -2, 0, 9999,  false);
+  LemChassis.moveToPose(0, -2, 0, 9999);
   LemChassis.waitUntilDone();
 
 
-  LemChassis.turnTo(-22, 40, 1200, false); 
+  LemChassis.turnTo(-22, 40, 1200); 
   LemChassis.waitUntilDone();
 
-  WingR.set(false);
+  VertWingR.set(false);
 
-  LemChassis.moveTo(-12, 15, -30, 9999, true);
+  LemChassis.moveToPose(-12, 15, -30, 9999);
   LemChassis.waitUntilDone();
 
-  LemChassis.moveTo(-28, 32, -42, 9999,  true);
+  LemChassis.moveToPose(-28, 32, -42, 9999);
   LemChassis.waitUntilDone();
-
-  Blocker.set(false);
 }
 
 
 
-void SixBallMiddleMiddle(){
-  WingR.set(false);
-  WingL.set(false);
-  Blocker.set(false);
-  SetStopDegree(1);
+void SixBallCounterMiddle(){
   LemChassis.setPose(0, 0, 0); // X: 5.2, Y: 10.333, Heading: 87
 
 
   intake_in(500);
-  LemChassis.moveTo(-6, 45,-8, 9999, true);
+  LemChassis.moveToPose(-6, 45,-8, 9999);
   LemChassis.waitUntilDone();
 
 
@@ -255,31 +266,31 @@ void SixBallMiddleMiddle(){
   pros::delay(350);
 
   intake_in(500);
-  LemChassis.moveTo(-25, 55, -90, 9999, true);
+  LemChassis.moveToPose(-25, 55, -90, 9999);
   LemChassis.waitUntilDone();
   pros::delay(50);
 
-  LemChassis.moveTo(10, 49, -266, 9999, true);
+  LemChassis.moveToPose(10, 49, -266, 9999);
   LemChassis.waitUntil(16);
   intake_out(600);
-  WingR.set(true);
-  WingL.set(true);
+  VertWingR.set(true);
+  VertWingL.set(true);
   LemChassis.waitUntilDone();
 
 
   pros::delay(600);
 
   intake_in(500);
-  WingR.set(false);
-  WingL.set(false);
+  VertWingR.set(false);
+  VertWingL.set(false);
   
 
-  LemChassis.moveTo(-24, 32, -105, 9999, true);
+  LemChassis.moveToPose(-24, 32, -105, 9999);
   LemChassis.waitUntilDone();
 
   pros::delay(250);
   
-  LemChassis.moveTo(11, 8, -300, 9999, true);
+  LemChassis.moveToPose(11, 8, -300, 9999);
   LemChassis.waitUntilDone();
 
   intake_out(600);  
@@ -287,59 +298,47 @@ void SixBallMiddleMiddle(){
 
   intake_in(450); 
 
-  LemChassis.moveTo(-32, -5, -85, 9999, true);
+  LemChassis.moveToPose(-32, -5, -85, 9999);
   LemChassis.waitUntilDone();
 
   pros::delay(350);
 
-  LemChassis.moveTo(3, -14, -275, 9999, true);
+  LemChassis.moveToPose(3, -14, -275, 9999);
   LemChassis.waitUntilDone();
 
-  LemChassis.moveTo(17, -9, -315, 9999, true);
+  LemChassis.moveToPose(17, -9, -315, 9999);
   LemChassis.waitUntilDone();
 
   LemChassis.turnTo(15, 50, 9999);
   LemChassis.waitUntilDone();
 
-  LemChassis.moveTo(30, 3, -355, 9999, true);
+  LemChassis.moveToPose(30, 3, -355, 9999);
   LemChassis.waitUntilDone();
 
-  LemChassis.moveTo(30, 9.5, -355, 9999, true);
+  LemChassis.moveToPose(30, 9.5, -355, 9999);
   LemChassis.waitUntilDone();
 
-  LemChassis.moveTo(30, 3, -355, 9999, true, 10);
+  LemChassis.moveToPose(30, 3, -355, 9999);
   LemChassis.waitUntilDone();
 
   }
 
 
 
-void SixBallMiddleTop(){
-  WingR.set(false);
-  WingL.set(false);
-  Blocker.set(false);
-  SetStopDegree(2);
+void SixBallCounterTop(){
   LemChassis.setPose(-53, -52, 315); // X: 5.2, Y: 10.333, Heading: 87
 
 }
 
 
 void SixBallSafe(){
-  WingR.set(false);
-  WingL.set(false);
-  Blocker.set(false);
-  SetStopDegree(2);
   LemChassis.setPose(-53, -52, 315); // X: 5.2, Y: 10.333, Heading: 87
 
 
 }
 
 
-void CloseMiddleOver(){
-  WingR.set(false);
-  WingL.set(false);
-  Blocker.set(false);
-  SetStopDegree(2);
+void ClosePushOver(){
   LemChassis.setPose(-53, -52, 315); // X: 5.2, Y: 10.333, Heading: 87
 
 
@@ -347,78 +346,14 @@ void CloseMiddleOver(){
 
 
 
-void CloseMiddleOverWait(){
-  WingR.set(false);
-  WingL.set(false);
-  Blocker.set(false);
-  SetStopDegree(1);
-  LemChassis.setPose(0, 0, 0); // X: 5.2, Y: 10.333, Heading: 87
-  //Create a wait integer for 13.5 seconds + the current pros milliseconds time
-  int wait = pros::millis() + 13500;
-  printf("wait integer = %i \n pros millis at start = %i", wait, pros::millis());
-
-  intake_in(600);
-
-  LemChassis.moveTo(9, 46, 0, 9999, true);
-  LemChassis.waitUntilDone();
-
-
-  LemChassis.moveTo(6, 32, 45, 9999, true);
-  LemChassis.waitUntilDone();
-
-
-  //LemChassis.moveTo(24.25, 41, 87, 9999, true);
-
-  //LemChassis.waitUntil(10);
-  intake_out(600);
-
-  //LemChassis.waitUntilDone();
-
-
-
-  //LemChassis.moveTo(-6, 45,-8, 9999, true);
-
-  //LemChassis.follow(ClosePushOver2_txt, 3, 9999, true);
-
-  while (pros::millis() < wait){
-    pros::delay(10);
-  }
-
-
-}
-
-
-
-void CloseTopMiddle(){
-  WingR.set(false);
-  WingL.set(false);
-  Blocker.set(false);
-  SetStopDegree(2);
-  LemChassis.setPose(-53, -52, 315); // X: 5.2, Y: 10.333, Heading: 87
-
-
-}
-
-
-
-void CloseMiddleOverTouchHang(){
-  WingR.set(false);
-  WingL.set(false);
-  Blocker.set(false);
-  SetStopDegree(2);
-  LemChassis.setPose(-53, -52, 315); // X: 5.2, Y: 10.333, Heading: 87
-
+void CloseDisrupt(){
 
 }
 
 
 
 void Auton_Skills(){
-  //("running skills/n");
-  WingR.set(false);
-  WingL.set(false);
-  Blocker.set(false);
-  SetStopDegree(2);
+  //printf("running skills/n");
   LemChassis.setPose(-53, -52, 315); // X: 5.2, Y: 10.333, Heading: 87
 
 }
@@ -436,9 +371,9 @@ void LemTest(){
 
   ////////////////////////////////////////////////////////////////////////////////////////
 
-  //LemChassis.moveTo(0, 10, 0, 99999, 127); // move to the point (10, 0) with a timeout of 1000 ms, and a maximum speed of 50
+  //LemChassis.moveToPose(0, 10, 0, 99999, 127); // move to the point (10, 0) with a timeout of 1000 ms, and a maximum speed of 50
 
-  LemChassis.turnTo(30, 0, 99999, 127, true); // turn to the point (10, 0) with a timeout of 1000 ms, and a maximum speed of 50
+  LemChassis.turnTo(30, 0, 99999, false); // turn to the point (10, 0) with a timeout of 1000 ms, and a maximum speed of 50
 
 }
 

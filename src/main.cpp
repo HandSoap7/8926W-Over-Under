@@ -1,7 +1,7 @@
 #include "main.h"
 #include "autons.hpp"
 #include "definitions.hpp"
-#include "catapult.hpp"
+#include "puncher.hpp"
 #include "intake.hpp"
 #include "pistons.hpp"
 #include "lemlib/api.hpp"
@@ -28,7 +28,7 @@ Drive chassis (
 
   // Wheel Diameter (Remember, 4" wheels are actually 4.125!)
   //    (or tracking wheel diameter)
-  ,2.746
+  ,3.25
 
   // Cartridge RPM
   //   (or tick per rotation if using tracking wheels)
@@ -77,15 +77,10 @@ void initialize() {
 
 
   ez::as::auton_selector.add_autons({
-    Auton("1 AWP", SuperSimpleAWP),
-    Auton("2 FAR MidMid", SixBallMiddleMiddle),
-    Auton("3 FAR MidTop", SixBallMiddleTop),
-    Auton("4 FAR Safe", SixBallSafe),
-    Auton("4 CLOSE Over", CloseMiddleOver),
-    Auton("5 CLOSE OverWait", CloseMiddleOverWait),
-    Auton("6 CLOSE TopMid", CloseTopMiddle), 
-    //Auton("Test File (NO COMP)", LemTest),
     //Auton("Odom tracking", MakeAuton),
+    Auton("1 AWP", SuperSimpleAWP),
+
+    //Auton("Test File (NOT COMP)", LemTest),
     Auton("Auton Skills", Auton_Skills),
   });
 
@@ -111,7 +106,7 @@ void initialize() {
 
   pros::delay(200); // Wait for auton selector to finish
 
-  pros::Task Reload_Rotation(catapult_reload_rotation_task);
+  pros::Task Reload_Distance(puncher_reload_distance_task);
   
 }
 
@@ -199,13 +194,12 @@ void opcontrol() {
 
    intake_hold(); // Sets the intake to coast mode (no brake)
 
-   SetStopDegree(1); //Set cata stop to intake blocking (best for intaking)
-
-   OdomRetraction.set(true); //Retract the horizontal odom wheel
-   Blocker.set(false); //Lower the blocker
-   AuxHang.set(false); //Don't deploy auxHang
-   WingL.set(false); //Retract the left wing
-   WingR.set(false); //Retract the right wing
+   PistonHang.set(false); //Don't deploy Piston hang
+   SideHang.set(false); //Don't deploy Side hang
+   HorizWingL.set(false); //Retract the Horizontal left wing
+   HorizWingR.set(false); //Retract the Horizontal right wing
+   VertWingL.set(false); //Retract the Vertical left wing
+   VertWingR.set(false); //Retract the Vertical right wing
 
    while (true) {
 
@@ -233,38 +227,21 @@ void opcontrol() {
 
     //////////////////////////////////////////////////////////////
 
-    //Catapult code
+    //Puncher code
 
     //////////////////////////////////////////////////////////////
 
-    //Catapult fires if R1 is being pressed
+    //Puncher fires if R1 is being pressed
     if (master.get_digital(R1)) {
       FastFireState(true);
     }
-
-    //Catapult switches to Hang Mode
-    else if (master.get_digital(A)) {
-      SetStopDegree(3);
-    }
-
-    else if (master.get_digital(X)) {
-      SetStopDegree(2);
-    }
-
-    //If needed to switch back to Normal Cata Rack Position
-    else if (master.get_digital(B)) {
-      SetStopDegree(1);
-    }
-
-    //Last Resort Cata Cut off
+    //Last Resort Puncher Cut off
     else if (master.get_digital(Down) && master.get_digital(B) && master.get_digital(Left) && master.get_digital(A)) { 
       ManualOverrideState(true);
-      cata_move(0);
     }
 
     else {
      FastFireState(false);
-
     }
 
 
@@ -277,13 +254,13 @@ void opcontrol() {
     //////////////////////////////////////////////////////////////
 
     //intake into the robot if L2 is being pressed
-    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+    if (master.get_digital(L2)) {
       intake_in(600);
       //pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, "."); 
     }
 
     //intake into the robot if R2 is being pressed
-    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+    else if (master.get_digital(R2)) {
      intake_out(600);
     }
 
@@ -299,15 +276,18 @@ void opcontrol() {
 
     //////////////////////////////////////////////////////////////
 
+    //Horizontal Wings
+    HorizWingL.button(master.get_digital_new_press(Right));
+    HorizWingR.button(master.get_digital_new_press(Y));
 
-    WingL.button(master.get_digital_new_press(Right));
-    //WingL.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT));
-    WingR.button(master.get_digital_new_press(Y));
+    //Verical Wings
+    VertWingL.button(master.get_digital_new_press(Y));
+    VertWingR.button(master.get_digital_new_press(Y));
 
+    //Piston and Side Hang
+    PistonHang.button(master.get_digital_new_press(Y));
+    SideHang.button(master.get_digital_new_press(Y));
 
-    Blocker.button(master.get_digital_new_press(L1));
-
-    AuxHang.button(master.get_digital_new_press(Up));
 
     pros::delay(15); // This is used for timer calculations!
   }

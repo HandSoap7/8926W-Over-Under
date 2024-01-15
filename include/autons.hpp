@@ -2,21 +2,19 @@
 #include "autons.hpp"
 #include "lemlib/api.hpp"
 #include "pros/misc.hpp"
-
+#include "EZ-Template/drive/drive.hpp"
 
 extern lemlib::Chassis LemChassis;
 extern pros::Imu Inertial_sensy;
+extern Drive chassis;
 
 
 //Wiggle autons
 void SuperSimpleAWP();
-void SixBallMiddleMiddle();
-void SixBallMiddleTop();
+void SixBallCounterMiddle();
+void SixBallCounterTop();
 void SixBallSafe();
-void CloseMiddleOver();
-void CloseMiddleOverWait();
-void CloseTopMiddle();
-void CloseMiddleOverTouchHang();
+void CloseDisrupt();
 void Auton_Skills();
 
 
