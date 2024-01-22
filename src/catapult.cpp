@@ -12,7 +12,8 @@
 
 
 //catapult motor, limit switches, and rotation sensor ports
-pros::Motor catapult(9, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
+pros::Motor catapult(1, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
+pros::Motor catapult2(12, pros::E_MOTOR_GEARSET_36, true, pros::E_MOTOR_ENCODER_DEGREES);
 
 
 // Recognizes the type of value (digital(0/1) or analog(0-127)), the name in the code, and the port on the brain
@@ -25,6 +26,7 @@ pros::Rotation catapult_rotation(2);
 
 void cata_move(int voltage){
   catapult.move_voltage(voltage);
+  catapult2.move_voltage(voltage);
 }
 
 
@@ -32,8 +34,8 @@ void cata_move(int voltage){
 bool ManualOverride = false;
 bool FastFire = false;
 int CataStopDegree = 5500;
-int IntakeBlockDegree = 3850;
-int HangStopDegree = 2850;
+int IntakeBlockDegree = 7000;
+int HangStopDegree = 3050;
 int UsuableStopDegree = IntakeBlockDegree;
 
 void FastFireState(bool state){
@@ -69,7 +71,7 @@ void catapult_reload_rotation_task(void* param) {
     //printf("Stop Degree is %i /n", UsuableStopDegree);
 
     if (FastFire==true){
-      cata_move(11000);
+      cata_move(11250);
       }
     else{
       //Hard stop Degree is around 10100 millidegrees, The stop degree is atleast 10000 millidegrees

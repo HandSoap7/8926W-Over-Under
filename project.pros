@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "wilam",
+    "project_name": "Willa m",
     "target": "v5",
     "templates": {
       "EZ-Template": {
@@ -206,7 +206,7 @@
       }
     },
     "upload_options": {
-      "description": "WILL",
+      "description": "DRive",
       "icon": "pros",
       "slot": 1
     }

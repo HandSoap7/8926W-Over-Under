@@ -26,18 +26,18 @@
 Drive chassis (
   // Left Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  {-7, -8, -19}
+  {-10, -7, -2}
 
   // Right Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  ,{1, 3, 15}
+  ,{20, 17, 11}
 
   // IMU Port
   ,14
 
   // Wheel Diameter (Remember, 4" wheels are actually 4.125!)
   //    (or tracking wheel diameter)
-  ,2.745
+  ,3.25
 
   // Cartridge RPM
   //   (or tick per rotation if using tracking wheels)
@@ -86,7 +86,7 @@ void initialize() {
   // Start the catapult reload tasks
   //pros::Task Reload_Rotation(catapult_reload_rotation_task);
 
-  pros::Task Reload_Rotation(catapult_reload_rotation_task);
+  //pros::Task Reload_Rotation(catapult_reload_rotation_task);
 
   // Configure your chassis controls
   chassis.toggle_modify_curve_with_controller(true); // Enables modifying the controller curve with buttons on the joysticks
@@ -236,9 +236,9 @@ void opcontrol() {
     //////////////////////////////////////////////////////////////
     
 
-    chassis.tank(); // Will Drive
+    //chassis.tank(); // Will Drive
    
-    //chassis.arcade_standard(ez::SPLIT); // Sarah Drive
+    chassis.arcade_standard(ez::SPLIT); // Sarah Drive
 
 
     //////////////////////////////////////////////////////////////
@@ -250,6 +250,7 @@ void opcontrol() {
     //Catapult fires if R1 is being pressed
     if (master.get_digital(R1)) {
       FastFireState(true);
+      cata_move(12000);
     }
 
     //Catapult switches to Hang Mode
