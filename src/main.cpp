@@ -17,14 +17,14 @@
 Drive chassis (
   // Left Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  {-7, -8, 19}
+  {-2, -7, -10}
 
   // Right Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  ,{1, 3 , 15}
+  ,{11, 17, 20}
 
   // IMU Port
-  ,14
+  ,8
 
   // Wheel Diameter (Remember, 4" wheels are actually 4.125!)
   //    (or tracking wheel diameter)
@@ -78,7 +78,7 @@ void initialize() {
     //Auton("Odom tracking", MakeAuton),
     Auton("1 AWP", SuperSimpleAWP),
 
-    //Auton("Test File (NOT COMP)", LemTest),
+    Auton("Test File (NOT COMP)", LemTest),
     Auton("Auton Skills", Auton_Skills),
   });
 
@@ -89,7 +89,6 @@ void initialize() {
 	master.set_text(1, 0, "     THIS DUBYA");
   
   LemChassis.calibrate(); // calibrate sensors
-  chassis.initialize();
   ez::as::auton_selector.ImuInitializeGif(3300, "/usd/AircraftTakeoff.gif");
   //ez::as::auton_selector.ImuInitializeGif(5250, "/usd/NeverBackDown.gif"); //Sarah
 
@@ -147,19 +146,7 @@ void competition_initialize() {
  * from where it left off.
  */
 void autonomous() {
-    
-    // print odom values to the brain
-    ///*
-    pros::lcd::initialize(); // initialize brain screen
-    pros::Task screenTask([&]() {
-        while (true) {
-            lemlib::Pose pose = LemChassis.getPose(); // get chassis position
-            pros::lcd::print(0, "X: %f", pose.x);
-            pros::lcd::print(1, "Y: %f", pose.y);
-            pros::lcd::print(2, "Theta: %f", pose.theta);
-            pros::delay(20);
-        }
-    }); //*/
+
   ChassisCoast();
  // SuperSimpleAWP();
   ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
@@ -190,7 +177,7 @@ void opcontrol() {
 
    ChassisCoast(); //Sets all drivetrain motors to coast (low friction)
 
-   intake_hold(); // Sets the intake to coast mode (no brake)
+   intake_coast(); // Sets the intake to coast mode (no brake)
 
    PistonHang.set(false); //Don't deploy Piston hang
    SideHang.set(false); //Don't deploy Side hang
@@ -213,10 +200,12 @@ void opcontrol() {
     int rightX = master.get_analog(RightX);
 
     //Willy Drive
-    LemChassis.tank(leftY, rightY, 1);
+    //LemChassis.tank(leftY, rightY, 1);
+    chassis.tank();
 
     //Sarah Drive
     //LemChassis.arcade(leftY, rightX, 4);
+    //chassis.arcade_standard(ez::SPLIT);
 
     //Test Drive
     //LemChassis.curvature(leftY, rightX, 2.5);
@@ -230,8 +219,8 @@ void opcontrol() {
     //////////////////////////////////////////////////////////////
 
     //Puncher fires if R1 is being pressed
-    if (master.get_digital(R1)) {
-      FastFireState(true);
+    if (master.get_digital(B)) {
+      DistanceFromSensorState(true);
     }
     //Last Resort Puncher Cut off
     else if (master.get_digital(Down) && master.get_digital(B) && master.get_digital(Left) && master.get_digital(A)) { 
@@ -239,7 +228,7 @@ void opcontrol() {
     }
 
     else {
-     FastFireState(false);
+     DistanceFromSensorState(false);
     }
 
 
@@ -279,12 +268,12 @@ void opcontrol() {
     HorizWingR.button(master.get_digital_new_press(Y));
 
     //Verical Wings
-    VertWingL.button(master.get_digital_new_press(Y));
-    VertWingR.button(master.get_digital_new_press(Y));
+    VertWingL.button(master.get_digital_new_press(L1));
+    VertWingR.button(master.get_digital_new_press(R1));
 
     //Piston and Side Hang
-    PistonHang.button(master.get_digital_new_press(Y));
-    SideHang.button(master.get_digital_new_press(Y));
+    PistonHang.button(master.get_digital_new_press(Up));
+    SideHang.button(master.get_digital_new_press(X));
 
 
     pros::delay(15); // This is used for timer calculations!

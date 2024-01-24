@@ -18,13 +18,13 @@
 
 
 //puncher motor, limit switches, and rotation sensor ports
-pros::Motor puncher11Watt(9, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
-pros::Motor puncherHalfWatt(10, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+pros::Motor puncher11Watt(1, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+pros::Motor puncherHalfWatt(12, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
 
 
 // Recognizes the type of sensor, the name in the code, and the port on the brain
-pros::Rotation puncher_rotation(2);
-pros::Distance puncher_distance(2);
+pros::Rotation puncher_rotation(13);
+pros::Distance puncher_distance(3);
 
 
 //////////////////////////////////////////////////////////////////////
@@ -78,6 +78,7 @@ else{
 
 /////////////////////////////////////////////////////////////////////
 
+bool DistanceShooting = false;
 
 //puncher reload task using ROTATION sensor
 //puncher stops at a certain degree (200) and if it's below the degree it will run the motor
@@ -87,10 +88,7 @@ void puncher_reload_rotation_task(void* param) {
     //printf("Stop Degree is %i /n", UsuableStopDegree);
 
     if (FastFire==true){
-      puncher_move(12000);
-      }
-    else{
-      //Hard stop Degree is around 10100 millidegrees, The stop degree is atleast 10000 millidegrees
+       //Hard stop Degree is around 10100 millidegrees, The stop degree is atleast 10000 millidegrees
       if (puncher_rotation.get_angle() <= UsuableStopDegree) { // 20000 is the desired centidegree 
         puncher_move(12000);
         //printf("Rot degree = %i\n", puncher_rotation.get_angle());
@@ -98,14 +96,15 @@ void puncher_reload_rotation_task(void* param) {
       else {
         puncher_move(0);
       }
+    }
+    else{
+      puncher_move(0);
 
-      }
+    }
     pros::delay(20);
   }
   puncher_move(0);
 }
-
-
 
 
 
@@ -116,30 +115,42 @@ void puncher_reload_rotation_task(void* param) {
 /////////////////////////////////////////////////////////////////////
 
 
-int DistanceFromSensor = 50;    //Goal distance from sensor in millimeters
+int DistanceFromSensor = 5;    //Goal distance from sensor in millimeters
+
+void DistanceFromSensorState(bool state){
+DistanceFromSensor = state;
+}
 
 //puncher reload task using DISTANCE sensor
 //puncher stops at a certain degree (200) and if it's below the degree it will run the motor
 
 void puncher_reload_distance_task(void* param) {
-  while (ManualOverride==false) {
-    printf("Goal Distance from sensor is : %imm/n", DistanceFromSensor);
+while (ManualOverride==false) {
+  //printf("Goal Distance from sensor is : %imm/n", DistanceFromSensor);
 
-    if (FastFire==true){
-      puncher_move(12000);
-      }
-    else{
-      //Hard stop Degree is around 10100 millidegrees, The stop degree is atleast 10000 millidegrees
-      if (puncher_rotation.get_angle() <= DistanceFromSensor) { // 20000 is the desired centidegree 
-        pros::delay(200);
+    if (DistanceFromSensor==true){
+       //Hard stop Degree is around 10100 millidegrees, The stop degree is atleast 10000 millidegrees
+      if (puncher_rotation.get_angle() <= UsuableStopDegree) { // 20000 is the desired centidegree 
         puncher_move(12000);
-        printf("Current distance from sensor is : %imm/n", puncher_distance.get());
+        //printf("Rot degree = %i\n", puncher_rotation.get_angle());
       } 
       else {
-        puncher_move(0);
-      }
 
+        
+        if(puncher_distance.get() <= DistanceFromSensor){
+          pros::delay(30);
+          puncher_move(12000);
+        }
+        else{
+          puncher_move(0);
+          pros::delay(10);
+        }
       }
+    }
+    else{
+      puncher_move(0);
+
+    }
     pros::delay(20);
   }
   puncher_move(0);

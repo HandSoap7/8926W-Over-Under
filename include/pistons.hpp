@@ -13,17 +13,17 @@
 // The default state should be what makes the robot in size
 
 //Horizontal Wings
-inline PistonGroup HorizWingL('A', false);
-inline PistonGroup HorizWingR('B', false);
+inline PistonGroup HorizWingL('F', false);
+inline PistonGroup HorizWingR('G', false);
 
 //Vertical Wings
-inline PistonGroup VertWingL('A', false);
-inline PistonGroup VertWingR('A', false);
+inline PistonGroup VertWingL('D', false);
+inline PistonGroup VertWingR('H', false);
 
 
 //              HANGS               //
 //Side
-inline PistonGroup SideHang('D', false);
+inline PistonGroup SideHang('E', false);
 
 //Piston
-inline PistonGroup PistonHang('D', false);
+inline PistonGroup PistonHang('A', false);

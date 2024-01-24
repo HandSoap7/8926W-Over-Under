@@ -15,3 +15,4 @@ void puncher_reload_distance_task(void* param); // this allows us to pass intege
 void FastFireState(bool State);
 void ManualOverrideState(bool State);
 void SetStopDegree(int State);
+void DistanceFromSensorState(bool state);
