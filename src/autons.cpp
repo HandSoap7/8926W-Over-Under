@@ -190,7 +190,7 @@ const int SWING_SPEED = 110;
 
 
 void default_constants() {
-  chassis.set_slew_min_power(80, 80);
+  chassis.set_slew_min_power(80, 80);     
   chassis.set_slew_distance(7, 7);
   chassis.set_pid_constants(&chassis.headingPID, 11, 0, 20, 0);
   chassis.set_pid_constants(&chassis.forward_drivePID, 0.45, 0, 5, 0);

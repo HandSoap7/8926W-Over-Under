@@ -13,7 +13,6 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #include "EZ-Template/PID.hpp"
 #include "EZ-Template/util.hpp"
 #include "pros/motors.h"
-#include "gif-pros/gifclass.hpp"
 
 using namespace ez;
 
@@ -809,4 +808,4 @@ class Drive {
   void l_increase();
   void r_decrease();
   void r_increase();
-};
+};  
