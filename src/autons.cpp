@@ -181,7 +181,9 @@ void ChassisHold(){
 
 ///////////////////////////////////////////////////////////////////////
 
-
+int DRIVE_SPEED = 120;
+int TURN_SPEED = 115;
+int SWING_SPEED = 110;
 
 
 
@@ -200,102 +202,13 @@ void ChassisHold(){
 
 
 void SuperSimpleAWP(){
-  LemChassis.setPose(0, 0, 0); // X: 5.2, Y: 10.333, Heading: 87
 
-
-
-  LemChassis.moveToPose(0, -8, 0, 2000);
-  VertWingR.set(true); 
-  LemChassis.waitUntilDone();
-
-  LemChassis.moveToPose(0, -2, 0, 9999);
-  LemChassis.waitUntilDone();
-
-
-  LemChassis.turnTo(-22, 40, 1200); 
-  LemChassis.waitUntilDone();
-
-  VertWingR.set(false);
-
-  LemChassis.moveToPose(-12, 15, -30, 9999);
-  LemChassis.waitUntilDone();
-
-  LemChassis.moveToPose(-28, 32, -42, 9999);
-  LemChassis.waitUntilDone();
 }
 
 
 
 void SixBallCounterMiddle(){
-  LemChassis.setPose(0, 0, 0); // X: 5.2, Y: 10.333, Heading: 87
-
-
-  intake_in(500);
-  LemChassis.moveToPose(-6, 45,-8, 9999);
-  LemChassis.waitUntilDone();
-
-
-  LemChassis.turnTo(9.5, 47, 9999);
-  LemChassis.waitUntilDone();
-  intake_out(600);
-  pros::delay(350);
-
-  intake_in(500);
-  LemChassis.moveToPose(-25, 55, -90, 9999);
-  LemChassis.waitUntilDone();
-  pros::delay(50);
-
-  LemChassis.moveToPose(10, 49, -266, 9999);
-  LemChassis.waitUntil(16);
-  intake_out(600);
-  VertWingR.set(true);
-  VertWingL.set(true);
-  LemChassis.waitUntilDone();
-
-
-  pros::delay(600);
-
-  intake_in(500);
-  VertWingR.set(false);
-  VertWingL.set(false);
   
-
-  LemChassis.moveToPose(-24, 32, -105, 9999);
-  LemChassis.waitUntilDone();
-
-  pros::delay(250);
-  
-  LemChassis.moveToPose(11, 8, -300, 9999);
-  LemChassis.waitUntilDone();
-
-  intake_out(600);  
-  pros::delay(350);
-
-  intake_in(450); 
-
-  LemChassis.moveToPose(-32, -5, -85, 9999);
-  LemChassis.waitUntilDone();
-
-  pros::delay(350);
-
-  LemChassis.moveToPose(3, -14, -275, 9999);
-  LemChassis.waitUntilDone();
-
-  LemChassis.moveToPose(17, -9, -315, 9999);
-  LemChassis.waitUntilDone();
-
-  LemChassis.turnTo(15, 50, 9999);
-  LemChassis.waitUntilDone();
-
-  LemChassis.moveToPose(30, 3, -355, 9999);
-  LemChassis.waitUntilDone();
-
-  LemChassis.moveToPose(30, 9.5, -355, 9999);
-  LemChassis.waitUntilDone();
-
-  LemChassis.moveToPose(30, 3, -355, 9999);
-  LemChassis.waitUntilDone();
-
   }
 
 
@@ -307,8 +220,139 @@ void SixBallCounterTop(){
 
 
 void SixBallSafe(){
-  LemChassis.setPose(-53, -52, 315); // X: 5.2, Y: 10.333, Heading: 87
+  //basic initialization
+  //pros::Task Reload_Limit(catapult_reload_limit_task);
+  intakeHold();
+  HorizWingL.set(false);
+  HorizWingR.set(false);
 
+  //start of auton
+  intake_in(600);
+
+  //drive to the first ball
+  chassis.set_drive_pid(5, DRIVE_SPEED, true);
+  chassis.wait_drive();
+
+  pros::delay(150);
+
+    intake_in(0);
+
+
+  //backup toawrds matchloader
+  chassis.set_drive_pid(-39, DRIVE_SPEED, true);
+  chassis.wait_drive();
+
+  //drive towards matchloader and sweep the matchload triball out
+  chassis.set_swing_pid(ez::LEFT_SWING, -45, -TURN_SPEED);
+  chassis.wait_drive();
+
+  HorizWingL.set(true);
+
+  //drive towards goals
+  chassis.set_drive_pid(-19, 85, true);
+  chassis.wait_drive();
+
+  //backup and repeat
+  chassis.set_turn_pid(-100, TURN_SPEED);
+  chassis.wait_drive();
+
+  chassis.set_turn_pid(-65, TURN_SPEED);
+  chassis.wait_drive();
+
+  SideHang.set(false);
+  HorizWingL.set(false);
+
+  intake_in(100);
+
+  chassis.set_drive_pid(-20, DRIVE_SPEED, true);
+  chassis.wait_until(2);
+
+  //backup and turn towards triball near the post
+  chassis.set_drive_pid(12, DRIVE_SPEED, true);
+  chassis.wait_drive();
+  chassis.set_turn_pid(105, TURN_SPEED);
+  chassis.wait_drive();
+
+  intake_out(600);
+
+  pros::delay(300);
+
+  chassis.set_drive_pid(35, 127, true);
+  chassis.wait_until(12);
+
+  chassis.set_drive_pid(-14, DRIVE_SPEED, true);
+
+  chassis.set_turn_pid(2, TURN_SPEED);
+  chassis.wait_drive();
+
+  intake_in(600);
+
+  //drive towards triball
+  chassis.set_drive_pid(30, 127, true);
+  chassis.wait_drive();
+
+  chassis.set_swing_pid(LEFT_SWING, 30, 127);
+  chassis.wait_drive();
+
+  chassis.set_drive_pid(23, DRIVE_SPEED, true);
+  chassis.wait_drive();
+
+  pros::delay(200);
+
+  chassis.set_turn_pid(160, TURN_SPEED);
+  chassis.wait_drive();
+
+  chassis.set_drive_pid(22, 125, true);
+  intake_out(600);
+  chassis.wait_drive();
+
+  pros::delay(100);
+
+  chassis.set_drive_pid(-18, DRIVE_SPEED, true);
+  chassis.wait_drive();
+
+  //turn towards middle triball
+  chassis.set_turn_pid(60, TURN_SPEED);
+  chassis.wait_drive();
+
+  intakeHold();
+
+
+  //drive towards middle triball while intaking
+  intake_in(600);
+
+  chassis.set_drive_pid(24, DRIVE_SPEED, true);
+  chassis.wait_drive();
+
+  //turn towards goal and sweep other triballs in
+  chassis.set_turn_pid(180, TURN_SPEED);
+
+  chassis.wait_drive();
+
+  HorizWingL.set(true);
+  HorizWingR.set(true);
+
+  intake_out(600);
+
+  chassis.set_drive_pid(100, 127, true);
+  chassis.wait_until(34);
+
+  //go back and forth to knock triballs in
+
+  chassis.set_drive_pid(-10, 127, true);
+  chassis.wait_drive();
+
+  chassis.set_drive_pid(18, 127, true);
+  chassis.wait_until(4);
+
+  chassis.set_drive_pid(-6, 127, true);
+  chassis.wait_drive();
+
+  intake_stop();
+
+  //toggle off wings
+  HorizWingL.set(false);
+  HorizWingR.set(false);
 
 }
 
