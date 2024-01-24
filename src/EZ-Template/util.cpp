@@ -43,7 +43,7 @@ void print_WIGGLE_template() {
 
 )" << '\n';
 
-  printf("WIGGLY BOY");
+  printf("WIGGLY BOY/n");
 }
 
 

@@ -1,6 +1,7 @@
 #include "main.h"
 #include "EZ-Template/auton.hpp"
 #include "EZ-Template/util.hpp"
+#include "EZ-Template/drive/drive.hpp"
 #include "autons.hpp"
 #include "display/lv_objx/lv_btnm.h"
 #include "display/lv_objx/lv_imgbtn.h"
@@ -105,7 +106,7 @@ void initialize() {
 	master.set_text(1, 0, "     THIS DUBYA");
   
   LemChassis.calibrate(); // calibrate sensors
-  ez::as::auton_selector.ImuInitializeGif(3300, "/usd/AircraftTakeoff.gif");
+  chassis.initialize(3300, "/usd/AircraftTakeoff.gif");
   //ez::as::auton_selector.ImuInitializeGif(5250, "/usd/NeverBackDown.gif"); //Sarah
 
   //printf("imu initialized and startup gif shown\n")

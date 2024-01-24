@@ -1,9 +1,14 @@
+/*
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v. 2.0. If a copy of the MPL was not distributed with this
+file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
 
 #include <filesystem>
 
 #include "main.h"
-namespace ez{
-namespace as {
+
+namespace ez::as {
 AutonSelector auton_selector{};
 
 // Initialize auton selector
@@ -25,4 +30,3 @@ void shutdown() {
   pros::lcd::shutdown();
 }
 }  // namespace ez::as
-}  // namespace ez

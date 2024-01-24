@@ -13,6 +13,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #include "EZ-Template/PID.hpp"
 #include "EZ-Template/util.hpp"
 #include "pros/motors.h"
+#include "gif-pros/gifclass.hpp"
 
 using namespace ez;
 
@@ -107,7 +108,7 @@ class Drive {
   /**
    * Calibrates imu and initializes sd card to curve.
    */
-  void initialize();
+  void initialize(int gif_length, std::string gif_path);
 
   /**
    * Tasks for autonomous.
@@ -472,15 +473,12 @@ class Drive {
   /**
    * Calibrates the IMU, reccomended to run in initialize().
    *
-   * \param run_loading_animation
-   *        bool for running loading animation
+   * \param gif_length
+            length of gif in milliseconds
+   * \param gif_path
+            path to gif
    */
-  bool imu_calibrate(bool run_loading_animation = true);
-
-  /**
-   * Loading display while the IMU calibrates.
-   */
-  void imu_loading_display(int iter);
+  bool imu_calibrate(int gif_length, std::string gif_path);
 
   /////
   //

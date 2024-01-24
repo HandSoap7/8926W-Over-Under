@@ -6,7 +6,6 @@
 
 extern lemlib::Chassis LemChassis;
 extern pros::Imu Inertial_sensy;
-extern Drive chassis;
 
 
 //Wiggle autons
