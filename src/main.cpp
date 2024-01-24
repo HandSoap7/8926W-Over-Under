@@ -26,14 +26,14 @@
 Drive chassis (
   // Left Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  {-10, -7, -2}
+  {-2, -7, -10}
 
   // Right Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  ,{20, 17, 11}
+  ,{11, 17, 20}
 
   // IMU Port
-  ,14
+  ,8
 
   // Wheel Diameter (Remember, 4" wheels are actually 4.125!)
   //    (or tracking wheel diameter)
@@ -47,7 +47,7 @@ Drive chassis (
   //    (or gear ratio of tracking wheel)
   // eg. if your drive is 84:36 where the 36t is powered, your RATIO would be 2.333.
   // eg. if your drive is 36:60 where the 60t is powered, your RATIO would be 0.6.
-  ,1.38
+  ,1.3333333
 
   // Uncomment if using tracking wheels
   /*
@@ -64,6 +64,7 @@ Drive chassis (
   // 3 Wire Port Expander Smart Port
   // ,1
 );
+
 
 
 
@@ -178,9 +179,9 @@ void autonomous() {
   chassis.set_drive_brake(pros::E_MOTOR_BRAKE_HOLD); // Set motors to hold.  This helps autonomous consistency.
 
 
-  //SuperSimpleAWP();
+  SuperSimpleAWP();
   //Auton_Skills();
-  SixBallSafe();
+  //SixBallSafe();
   //ClosePushOver();
 
   // Run the selected auton
