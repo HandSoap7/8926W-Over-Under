@@ -16,3 +16,4 @@ void FastFireState(bool State);
 void ManualOverrideState(bool State);
 void SetStopDegree(int State);
 void DistanceFromSensorState(bool state);
+void DeployIntake();

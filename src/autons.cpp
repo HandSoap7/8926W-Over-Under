@@ -51,7 +51,7 @@ pros::MotorGroup RightyMotors({right_front_motor, right_middle_motor, right_back
 lemlib::Drivetrain drivetrain {
     &LeftyMotors, // left drivetrain motors
     &RightyMotors, // right drivetrain motors
-    11.6, // track width
+    12, // track width
     lemlib::Omniwheel::NEW_325, // wheel diameter
     450, // wheel rpm
     4 //Chase Power
@@ -181,12 +181,35 @@ void ChassisHold(){
 
 ///////////////////////////////////////////////////////////////////////
 
-int DRIVE_SPEED = 120;
-int TURN_SPEED = 115;
-int SWING_SPEED = 110;
+const int DRIVE_SPEED = 120;
+const int TURN_SPEED = 115;
+const int SWING_SPEED = 110;
 
 
 
+
+
+void default_constants() {
+  chassis.set_slew_min_power(80, 80);
+  chassis.set_slew_distance(7, 7);
+  chassis.set_pid_constants(&chassis.headingPID, 11, 0, 20, 0);
+  chassis.set_pid_constants(&chassis.forward_drivePID, 0.45, 0, 5, 0);
+  chassis.set_pid_constants(&chassis.backward_drivePID, 0.45, 0, 5, 0);
+  chassis.set_pid_constants(&chassis.turnPID, 5, 0.003, 35, 15);
+  chassis.set_pid_constants(&chassis.swingPID, 7, 0, 45, 0);
+}
+
+void exit_condition_defaults() {
+  chassis.set_exit_condition(chassis.turn_exit, 100, 3, 500, 7, 500, 500);
+  chassis.set_exit_condition(chassis.swing_exit, 100, 3, 500, 7, 500, 500);
+  chassis.set_exit_condition(chassis.drive_exit, 80, 50, 300, 150, 500, 500);
+}
+
+void modified_exit_condition() {
+  chassis.set_exit_condition(chassis.turn_exit, 100, 3, 500, 7, 500, 500);
+  chassis.set_exit_condition(chassis.swing_exit, 100, 3, 500, 7, 500, 500);
+  chassis.set_exit_condition(chassis.drive_exit, 80, 50, 300, 150, 500, 500);
+}
 
 
 
@@ -203,6 +226,62 @@ int SWING_SPEED = 110;
 
 void SuperSimpleAWP(){
 
+  
+  HorizWingR.set(false);
+  HorizWingL.set(false);
+  VertWingL.set(false);
+  PistonHang.set(false);
+  SideHang.set(false);
+
+  printf("running super simple awp/n");
+
+  intake_out(600);
+  DeployIntake;
+  
+  printf("deploy intake/n");
+
+  chassis.set_turn_pid(0, DRIVE_SPEED);
+  chassis.wait_drive();
+
+  printf("first turn/n");
+  
+  chassis.set_drive_pid(-7, DRIVE_SPEED);
+  chassis.wait_drive();
+
+  printf("backup/n");
+  /*
+
+  HorizWingR.set(true);
+
+  chassis.set_turn_pid(2, DRIVE_SPEED);
+  chassis.wait_drive();
+
+  chassis.set_drive_pid(2, DRIVE_SPEED);
+  chassis.wait_drive();
+
+  chassis.set_swing_pid(RIGHT_SWING, -45, DRIVE_SPEED);
+  chassis.wait_drive();
+
+  HorizWingR.set(false);
+
+  chassis.set_turn_pid(-28, DRIVE_SPEED);
+  chassis.wait_drive();
+
+  chassis.set_drive_pid(28, DRIVE_SPEED);
+  chassis.wait_drive();
+
+  chassis.set_turn_pid(-42, DRIVE_SPEED);
+  chassis.wait_drive();
+
+  chassis.set_drive_pid(16, DRIVE_SPEED);
+  chassis.wait_drive();
+
+  chassis.set_turn_pid(-25, DRIVE_SPEED);
+  chassis.wait_drive();
+
+ HorizWingL.set(true);
+
+ */
 }
 
 

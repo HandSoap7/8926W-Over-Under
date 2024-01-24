@@ -116,9 +116,14 @@ void puncher_reload_rotation_task(void* param) {
 
 
 int DistanceFromSensor = 5;    //Goal distance from sensor in millimeters
+bool DeployIntakeState = false;     //0 = false, 1 = true
 
 void DistanceFromSensorState(bool state){
 DistanceFromSensor = state;
+}
+
+void DeployIntake(){
+  DeployIntakeState = true;
 }
 
 //puncher reload task using DISTANCE sensor
@@ -148,8 +153,16 @@ while (ManualOverride==false) {
       }
     }
     else{
-      puncher_move(0);
+      if (DeployIntakeState = true){ 
+        puncher_move(12000);
+         pros::delay(150); 
+         } 
+      else{
 
+
+      puncher_move(0);
+      }
+      DeployIntakeState = false;
     }
     pros::delay(20);
   }

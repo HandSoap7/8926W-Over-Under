@@ -38,7 +38,7 @@ Drive chassis (
   //    (or gear ratio of tracking wheel)
   // eg. if your drive is 84:36 where the 36t is powered, your RATIO would be 2.333.
   // eg. if your drive is 36:60 where the 60t is powered, your RATIO would be 0.6.
-  ,1.35
+  ,1.3333333
 
   // Uncomment if using tracking wheels
   /*
@@ -73,11 +73,17 @@ void initialize() {
   //pros::Task odomScreenTask(LemScreen);
 
 
+  chassis.toggle_modify_curve_with_controller(true); // Enables modifying the controller curve with buttons on the joysticks
+  chassis.set_active_brake(0); // Sets the active brake kP. We recommend 0.1.
+  chassis.set_curve_default(0, 0); // Defaults for curve. If using tank, only the first parameter is used. (Comment this line out if you have an SD card!)  
+  default_constants(); // Sets default constants for PID and other things
+  exit_condition_defaults(); // Sets default exit conditions for PID and other things
+
 
   ez::as::auton_selector.add_autons({
     //Auton("Odom tracking", MakeAuton),
     Auton("1 AWP", SuperSimpleAWP),
-
+    Auton("2 SixBallSafe", SixBallSafe),
     Auton("Test File (NOT COMP)", LemTest),
     Auton("Auton Skills", Auton_Skills),
   });
@@ -146,10 +152,15 @@ void competition_initialize() {
  * from where it left off.
  */
 void autonomous() {
+  chassis.reset_pid_targets(); // Resets PID targets to 0
+  chassis.reset_gyro(); // Reset gyro position to 0
+  chassis.reset_drive_sensor(); // Reset drive sensors to 0
+  chassis.set_drive_brake(MOTOR_BRAKE_COAST); // Set motors to hold.  This helps autonomous consistency.
+
 
   ChassisCoast();
- // SuperSimpleAWP();
-  ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
+  SuperSimpleAWP();
+  //ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
 }
 
 
