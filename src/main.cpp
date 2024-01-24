@@ -1,12 +1,21 @@
 #include "main.h"
+#include "EZ-Template/auton.hpp"
+#include "EZ-Template/util.hpp"
 #include "autons.hpp"
-#include "definitions.hpp"
+#include "display/lv_objx/lv_btnm.h"
+#include "display/lv_objx/lv_imgbtn.h"
 #include "puncher.hpp"
 #include "intake.hpp"
 #include "pistons.hpp"
+#include "pros/adi.h"
+#include "pros/misc.h"
+#include "pros/misc.hpp"
+#include "pros/motors.h"
+#include "pros/rtos.hpp"
+#include <algorithm>
+#include <sys/types.h>
+#include "definitions.hpp"
 #include "lemlib/api.hpp"
-#include "EZ-Template/auton.hpp"
-#include "EZ-Template/sdcard.hpp"
 #include "gif-pros/gifclass.hpp"
 
 
@@ -72,6 +81,7 @@ void initialize() {
   // print odom values to the brain
   //pros::Task odomScreenTask(LemScreen);
 
+  pros::delay(500);
 
   chassis.toggle_modify_curve_with_controller(true); // Enables modifying the controller curve with buttons on the joysticks
   chassis.set_active_brake(0); // Sets the active brake kP. We recommend 0.1.
@@ -158,7 +168,6 @@ void autonomous() {
   chassis.set_drive_brake(MOTOR_BRAKE_COAST); // Set motors to hold.  This helps autonomous consistency.
 
 
-  ChassisCoast();
   SuperSimpleAWP();
   //ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
 }

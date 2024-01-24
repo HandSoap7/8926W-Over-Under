@@ -1,12 +1,12 @@
 #include "autons.hpp"
+#include "EZ-Template/drive/drive.hpp"
+#include "EZ-Template/util.hpp"
 #include "puncher.hpp"
 #include "intake.hpp"
 #include "main.h"
 #include "pistons.hpp"
-#include "pros/motors.h"
 #include "pros/rtos.hpp"
 #include <set>
-#include "definitions.hpp"
 #include "gif-pros/gifclass.hpp"
 
 //LEM
