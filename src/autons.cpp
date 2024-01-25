@@ -178,9 +178,11 @@ void MoveTilResistance(double Resistance){
 void SixBallSafe() {
   //basic initialization
   //pros::Task Reload_Limit(catapult_reload_limit_task);
-  intakeHold();
-  WingL.set(false);
-  WingR.set(false);
+  HorizWingR.set(false);
+  HorizWingL.set(false);
+  VertWingL.set(false);
+  PistonHang.set(false);
+  SideHang.set(false);
 
   //start of auton
   intake_in(600);
@@ -202,7 +204,7 @@ void SixBallSafe() {
   chassis.set_swing_pid(ez::LEFT_SWING, -45, -TURN_SPEED);
   chassis.wait_drive();
 
-  WingL.set(true);
+  HorizWingL.set(true);
 
   //drive towards goals
   chassis.set_drive_pid(-19, 85, true);
@@ -215,8 +217,7 @@ void SixBallSafe() {
   chassis.set_turn_pid(-65, TURN_SPEED);
   chassis.wait_drive();
 
-  AuxHang.set(false);
-  WingL.set(false);
+  HorizWingL.set(false);
 
   intake_in(100);
 
@@ -286,8 +287,8 @@ void SixBallSafe() {
 
   chassis.wait_drive();
 
-  WingL.set(true);
-  WingR.set(true);
+  HorizWingL.set(true);
+  HorizWingR.set(true);
 
   intake_out(600);
 
@@ -308,161 +309,28 @@ void SixBallSafe() {
   intake_stop();
 
   //toggle off wings
-  WingL.set(false);
-  WingR.set(false);
 
+  HorizWingL.set(false);
+  HorizWingR.set(false);
 }
 
 void HighScoringShooting(){
 
-  //basic initialization
-  //pros::Task Reload_Limit(catapult_reload_limit_task);
-  intake_coast();
-  WingL.set(false);
-  WingR.set(false);
-
-  //start of auton
-  intake_in(450);    //outtake immediately to get rid of preloaded alliance ball
-
-  chassis.set_drive_pid(46, DRIVE_SPEED, true);  //drive about 2/5 the way there
-  chassis.wait_drive();
-
-  pros::delay(400);
-
-  chassis.set_drive_pid(-10, 50, true); //reverse to avoid getting entangled
-  chassis.wait_drive();
-
-  intake_stop(); //stop intaking
-
-  chassis.set_turn_pid(-115, 60); //turn towards the goal
-  chassis.wait_drive();
-
-  pros::delay(250); //let triball settle
-
-
-  pros::delay(400);
-
-  chassis.set_swing_pid(ez::RIGHT_SWING, 0, TURN_SPEED);
-  chassis.wait_drive();
-
-  intake_in(450);
-
-  chassis.set_drive_pid(21, DRIVE_SPEED, true); //drive towards the triball
-  chassis.wait_drive();
-
-  pros::delay(100);  //make sure to pick it up
-
-  chassis.set_drive_pid(-12, DRIVE_SPEED, true); //reverse to avoid getting entangled
-  chassis.wait_drive();
-
-  pros::delay(200);
-
-  intake_stop(); //stop intaking 
-
-  chassis.set_turn_pid(-112, 70); //turn towards the goal
-  chassis.wait_drive();
-
-  pros::delay(250);
-
-  pros::delay(400);
-
-  intake_in(400);
-
-  chassis.set_turn_pid(-165, DRIVE_SPEED); //turn towards pole
-  chassis.wait_drive();
-
-  chassis.set_drive_pid(35, DRIVE_SPEED, true); //drive towards pole
-  chassis.wait_drive();
 }
 
 void CloseMidRush(){
-  int waitTime = pros::millis() + 11000;
-  intake_hold();
-  WingL.set(false);
-  WingR.set(false);
-
-  intake_in(600);
-
-  chassis.set_drive_pid(57, DRIVE_SPEED, true);
-  chassis.wait_drive();
-
-  chassis.set_drive_pid(-5, DRIVE_SPEED, true);
-  chassis.wait_drive();
-  
-  intake_stop();
-
-  chassis.set_turn_pid(78, TURN_SPEED);
-  chassis.wait_drive();
-
-  chassis.set_drive_pid(21, DRIVE_SPEED, true);
-  intake_out(600);
-  
-  WingL.set(true);
-  chassis.wait_until(16);
-  
-
-  //reset imu to 0 heading
-  // chassis.reset_gyro(0);
-
-
-  pros::delay(200);
-
-  WingL.set(false);
-
-  chassis.set_swing_pid(LEFT_SWING, 37, -DRIVE_SPEED);
-  chassis.wait_drive();
-
-  
-  chassis.set_drive_pid(-68, DRIVE_SPEED, true);
-  chassis.wait_drive();
-
-  chassis.set_turn_pid(125, TURN_SPEED);
-  chassis.wait_drive();
-
-  WingR.set(true);
-
-  chassis.set_drive_pid(5, DRIVE_SPEED, true);
-  chassis.wait_drive();
-
-  chassis.set_swing_pid(RIGHT_SWING, 80, DRIVE_SPEED);
-  chassis.wait_drive();
-
-  WingR.set(false);
-
-  chassis.set_drive_pid(8, DRIVE_SPEED, true);
-
-  while (pros::millis() < waitTime){
-    pros::delay(10);
-  }
-
-  chassis.set_turn_pid(88, TURN_SPEED);
-  chassis.wait_drive();
-
-  chassis.set_drive_pid(43, DRIVE_SPEED, true);
-  intake_out(600);
-  chassis.wait_drive();
-
-  chassis.set_turn_pid(82, TURN_SPEED);
-  chassis.wait_drive();
-
-  chassis.set_drive_pid(-46, DRIVE_SPEED, true);
-  chassis.wait_drive();
-
-  chassis.set_turn_pid(140, TURN_SPEED);
-  chassis.wait_drive();
-  
-  chassis.set_drive_pid(4, DRIVE_SPEED);
-  chassis.wait_drive();
+ 
 }
 
 
 void SuperSimpleAWP(){
 
-  WingR.set(false);
-  WingL.set(false);
-  Blocker.set(false);
-  AuxHang.set(false);
-  SetStopDegree(1);
+
+  HorizWingR.set(false);
+  HorizWingL.set(false);
+  VertWingL.set(false);
+  PistonHang.set(false);
+  SideHang.set(false);
 
   intake_out(600);
 
@@ -472,7 +340,7 @@ void SuperSimpleAWP(){
   chassis.set_drive_pid(-7, DRIVE_SPEED);
   chassis.wait_drive();
 
-  WingR.set(true);
+  HorizWingR.set(true);
 
   chassis.set_turn_pid(2, DRIVE_SPEED);
   chassis.wait_drive();
@@ -484,8 +352,8 @@ void SuperSimpleAWP(){
   chassis.wait_drive();
 
   
-  AuxHang.set(false);
-  WingR.set(false);
+  HorizWingR.set(false);
+
 
   chassis.set_turn_pid(-28, DRIVE_SPEED);
   chassis.wait_drive();
@@ -502,17 +370,13 @@ void SuperSimpleAWP(){
   chassis.set_turn_pid(-25, DRIVE_SPEED);
   chassis.wait_drive();
 
- WingL.set(true);
+ HorizWingL.set(true);
  
 }
 
 
 
 void SixBallMiddleMiddle(){
-  WingR.set(false);
-  WingL.set(false);
-  Blocker.set(false);
-  SetStopDegree(1);
 
   chassis.set_drive_pid(60, 127);
   chassis.wait_drive();
@@ -530,20 +394,15 @@ void SixBallMiddleMiddle(){
 
 
 void SixBallMiddleTop(){
-  WingR.set(false);
-  WingL.set(false);
-  Blocker.set(false);
-  SetStopDegree(2);
+
 
 }
 
 
 
 void CloseMiddleOver(){
-  WingR.set(false);
-  WingL.set(false);
-  Blocker.set(false);
-  SetStopDegree(2);
+
+
 
 
 }
@@ -551,10 +410,6 @@ void CloseMiddleOver(){
 
 
 void CloseMiddleOverWait(){
-  WingR.set(false);
-  WingL.set(false);
-  Blocker.set(false);
-  SetStopDegree(2);
 
 
 }
@@ -562,10 +417,7 @@ void CloseMiddleOverWait(){
 
 
 void CloseTopMiddle(){
-  WingR.set(false);
-  WingL.set(false);
-  Blocker.set(false);
-  SetStopDegree(2);
+
 
 
 }
@@ -573,18 +425,14 @@ void CloseTopMiddle(){
 
 
 void CloseMiddleOverTouchHang(){
-  WingR.set(false);
-  WingL.set(false);
-  Blocker.set(false);
-  SetStopDegree(2);
+
 
 
 }
 
 void Auton_Skills(){
   intake_coast();
-  WingL.set(false);
-  WingR.set(false);
+
 
   
   FastFireState(true);
@@ -641,8 +489,8 @@ void Auton_Skills(){
 
   pros::delay(200);
 
-  WingL.set(true);
-  WingR.set(true);
+  HorizWingL.set(true);
+  HorizWingR.set(true);
 
   chassis.set_turn_pid(-55, TURN_SPEED);
   chassis.wait_drive();
@@ -665,8 +513,7 @@ void Auton_Skills(){
   chassis.set_turn_pid(0, TURN_SPEED);
   chassis.wait_drive();
 
-  WingL.set(false);
-  WingR.set(false);
+
 
   chassis.set_drive_pid(-20, DRIVE_SPEED, true);
   chassis.wait_drive();
@@ -678,8 +525,8 @@ void Auton_Skills(){
   chassis.wait_drive();
 
 
-  WingR.set(true);
-  WingL.set(true);
+  HorizWingR.set(true);
+  HorizWingL.set(true);
 
   chassis.set_turn_pid(60, TURN_SPEED);
   chassis.wait_drive();
@@ -700,8 +547,8 @@ void Auton_Skills(){
   chassis.set_drive_pid(-14, 127, true);
   chassis.wait_drive();
 
-  WingR.set(true);
-  WingL.set(true);
+  HorizWingR.set(true);
+  HorizWingL.set(true);
 
   chassis.set_drive_pid(40, 127);
   chassis.wait_until(10);
@@ -713,7 +560,6 @@ void Auton_Skills(){
   chassis.wait_drive();
 
   
-  WingL.set(false);
 
   chassis.set_turn_pid(-55, 115);
   chassis.wait_drive();
@@ -724,7 +570,7 @@ void Auton_Skills(){
   chassis.set_swing_pid(LEFT_SWING, 45, DRIVE_SPEED);
   chassis.wait_drive();
 
-  WingR.set(false);
+
 
   chassis.set_drive_pid(12, DRIVE_SPEED, true);
   chassis.wait_drive();

@@ -218,13 +218,12 @@ void opcontrol() {
 
    intake_coast(); // Sets the intake to coast mode (no brake)
 
-   SetStopDegree(1); //Set cata stop to intake blocking (best for intaking)
 
-   //OdomRetraction.set(true); //Retract the horizontal odom wheel
-   Blocker.set(false); //Lower the blocker
-   AuxHang.set(false); //Don't deploy auxHang
-   WingL.set(false); //Retract the left wing
-   WingR.set(false); //Retract the right wing
+    HorizWingR.set(false);
+    HorizWingL.set(false);
+    VertWingL.set(false);
+    PistonHang.set(false);
+    SideHang.set(false);
 
    //Gif gif("/usd/WiggleMain.gif", lv_scr_act()); // Create a gif object
 
@@ -237,9 +236,9 @@ void opcontrol() {
     //////////////////////////////////////////////////////////////
     
 
-    //chassis.tank(); // Will Drive
+    chassis.tank(); // Will Drive
    
-    chassis.arcade_standard(ez::SPLIT); // Sarah Drive
+    //chassis.arcade_standard(ez::SPLIT); // Sarah Drive
 
 
     //////////////////////////////////////////////////////////////
@@ -248,35 +247,17 @@ void opcontrol() {
 
     //////////////////////////////////////////////////////////////
 
-    //Catapult fires if R1 is being pressed
-    if (master.get_digital(R1)) {
-      FastFireState(true);
-      cata_move(12000);
+    //Puncher fires if R1 is being pressed
+    if (master.get_digital(B)) {
+      DistanceFromSensorState(true);
     }
-
-    //Catapult switches to Hang Mode
-    else if (master.get_digital(X)) {
-      SetStopDegree(3);
-    }
-
-    //else if (master.get_digital(X)) {
-      //SetStopDegree(2);
-    //}
-
-    //If needed to switch back to Normal Cata Rack Position
-    else if (master.get_digital(B)) {
-      SetStopDegree(1);
-    }
-
-    //Last Resort Cata Cut off
+    //Last Resort Puncher Cut off
     else if (master.get_digital(Down) && master.get_digital(B) && master.get_digital(Left) && master.get_digital(A)) { 
       ManualOverrideState(true);
-      cata_move(0);
     }
 
     else {
-     FastFireState(false);
-
+     DistanceFromSensorState(false);
     }
 
 
@@ -311,15 +292,17 @@ void opcontrol() {
 
     //////////////////////////////////////////////////////////////
 
+    //Horizontal Wings
+    HorizWingL.button(master.get_digital_new_press(Right));
+    HorizWingR.button(master.get_digital_new_press(Y));
 
-    WingL.button(master.get_digital_new_press(Right));
-    //WingL.button(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT));
-    WingR.button(master.get_digital_new_press(Y));
+    //Verical Wings
+    VertWingL.button(master.get_digital_new_press(L1));
+    VertWingR.button(master.get_digital_new_press(R1));
 
-
-    Blocker.button(master.get_digital_new_press(L1));
-
-    AuxHang.button(master.get_digital_new_press(Up));
+    //Piston and Side Hang
+    PistonHang.button(master.get_digital_new_press(Up));
+    SideHang.button(master.get_digital_new_press(X));
 
     pros::delay(15); // This is used for timer calculations!
   }
