@@ -41,7 +41,7 @@ void puncher_move(int voltage){
 
 bool ManualOverride = false;
 bool FastFire = false;
-int CataStopDegree = 7500;
+int CataStopDegree = 6500;
 int IntakeBlockDegree = 4300;
 int HangStopDegree = 2250;
 int UsuableStopDegree = IntakeBlockDegree;
@@ -99,7 +99,8 @@ void puncher_reload_rotation_task(void* param) {
 /////////////////////////////////////////////////////////////////////
 
 
-int DistanceFromSensor = 5;    //Goal distance from sensor in millimeters
+bool DistanceFromSensor = false;    //Goal distance from sensor in millimeters
+int DistanceFromSensorGoal = 10;     //Goal distance from sensor in millimeters
 bool DeployIntakeState = false;     //0 = false, 1 = true
 
 void DistanceFromSensorState(bool state){
@@ -119,15 +120,14 @@ while (ManualOverride==false) {
 
     if (DistanceFromSensor==true){
        //Hard stop Degree is around 10100 millidegrees, The stop degree is atleast 10000 millidegrees
-      if (puncher_rotation.get_angle() <= UsuableStopDegree) { // 20000 is the desired centidegree 
+      if (puncher_rotation.get_angle() <= CataStopDegree) { // 20000 is the desired centidegree 
         puncher_move(12000);
         //printf("Rot degree = %i\n", puncher_rotation.get_angle());
       } 
       else {
 
         
-        if(puncher_distance.get() <= DistanceFromSensor){
-          pros::delay(30);
+        if(puncher_distance.get() <= DistanceFromSensorGoal){
           puncher_move(12000);
         }
         else{
@@ -137,16 +137,17 @@ while (ManualOverride==false) {
       }
     }
     else{
-      if (DeployIntakeState = true){ 
-        puncher_move(12000);
-         pros::delay(150); 
+      if (DeployIntakeState == true){ 
+         puncher_move(12000);
+         pros::delay(350); 
+         DeployIntakeState = false;
          } 
       else{
 
 
       puncher_move(0);
       }
-      DeployIntakeState = false;
+      
     }
     pros::delay(20);
   }

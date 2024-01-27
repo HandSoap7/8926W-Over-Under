@@ -87,8 +87,6 @@ void initialize() {
   // Start the catapult reload tasks
   //pros::Task Reload_Rotation(catapult_reload_rotation_task);
 
-  //pros::Task Reload_Rotation(catapult_reload_rotation_task);
-
   // Configure your chassis controls
   chassis.toggle_modify_curve_with_controller(true); // Enables modifying the controller curve with buttons on the joysticks
   chassis.set_active_brake(0); // Sets the active brake kP. We recommend 0.1.
@@ -121,7 +119,7 @@ void initialize() {
 
 	// Initialize chassis and auton selector
 	chassis.initialize(3500, "/usd/AircraftTakeoff.gif");
-	//ez::as::initialize("/usd/whynotshine.gif", "/usd/WiggleMain.gif");
+	ez::as::initialize("/usd/whynotshine.gif", "/usd/WiggleMain.gif");
 
 	// Clear the LCD for the auton selector
 	pros::screen::erase();
@@ -131,6 +129,10 @@ void initialize() {
 	master.set_text(0, 0, ez::as::auton_selector.Autons[ez::as::auton_selector.selected_auton].Name);
 
 	pros::delay(200); // Wait for auton selector to finish
+
+  pros::Task Reload_Distance(puncher_reload_distance_task);
+
+  
 }
 
 
@@ -179,10 +181,12 @@ void autonomous() {
   chassis.set_drive_brake(pros::E_MOTOR_BRAKE_HOLD); // Set motors to hold.  This helps autonomous consistency.
 
 
-  SuperSimpleAWP();
-  //Auton_Skills();
+  //SuperSimpleAWP();
+  Auton_Skills();
   //SixBallSafe();
   //ClosePushOver();
+  //SarahSkills();
+  //Driver_Skills_Preloads();
 
   // Run the selected auton
   //ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
@@ -209,32 +213,38 @@ void autonomous() {
   // chassis.arcade_flipped(ez::SINGLE); // Flipped single arcade
   // chassis.arcade_standard(ez::SINGLE); // Standard single arcade
 
+
 void opcontrol() {
   // This is preference to what you like to drive on.
   // We use coast because it increases the time before motor burnout
+
+  
+
+
    uint32_t counterVar = 0; 
 
    chassis.set_drive_brake(pros::E_MOTOR_BRAKE_COAST); // Sets the drive to coast mode (no brake)
 
    intake_coast(); // Sets the intake to coast mode (no brake)
 
-
     HorizWingR.set(false);
     HorizWingL.set(false);
-    VertWingL.set(false);
     PistonHang.set(false);
     SideHang.set(false);
 
    //Gif gif("/usd/WiggleMain.gif", lv_scr_act()); // Create a gif object
 
-   while (true) { 
+   
 
+   while (true) { 
+    
     /////////////////////////////////////////////////////////////
     
     //Drive Code
 
     //////////////////////////////////////////////////////////////
     
+
 
     chassis.tank(); // Will Drive
    
@@ -292,13 +302,15 @@ void opcontrol() {
 
     //////////////////////////////////////////////////////////////
 
-    //Horizontal Wings
-    HorizWingL.button(master.get_digital_new_press(Right));
-    HorizWingR.button(master.get_digital_new_press(Y));
+    
+
+    ///Horizontal Wings
+    HorizWingL.button(master.get_digital_new_press(R1));
+    HorizWingR.button(master.get_digital_new_press(L1));
 
     //Verical Wings
-    VertWingL.button(master.get_digital_new_press(L1));
-    VertWingR.button(master.get_digital_new_press(R1));
+    VertWingL.button(master.get_digital_new_press(Right));
+    VertWingR.button(master.get_digital_new_press(Y));
 
     //Piston and Side Hang
     PistonHang.button(master.get_digital_new_press(Up));

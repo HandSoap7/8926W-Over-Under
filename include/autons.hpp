@@ -24,6 +24,8 @@ void CloseTopMiddle();
 void CloseMiddleOverTouchHang();
 void CloseMidRush();
 void Auton_Skills();
+void Driver_Skills_Preloads();
 
 
 void EZ_Tune();
+void SarahSkills();
