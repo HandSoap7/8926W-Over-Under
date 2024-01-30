@@ -36,9 +36,9 @@ void default_constants() {
   chassis.set_slew_min_power(80, 80);
   chassis.set_slew_distance(7, 7);
   chassis.set_pid_constants(&chassis.headingPID, 4, 0.003, 35, 0);
-  chassis.set_pid_constants(&chassis.forward_drivePID, 1.35, 0, 8.5, 0);
-  chassis.set_pid_constants(&chassis.backward_drivePID, 1.25, 0, 6, 0);
-  chassis.set_pid_constants(&chassis.turnPID, 6.5, 0.003, 50, 17.5);
+  chassis.set_pid_constants(&chassis.forward_drivePID, 1.40, 0, 8.5, 0); //1.35
+  chassis.set_pid_constants(&chassis.backward_drivePID, 1.30, 0, 6, 0);  //1.25
+  chassis.set_pid_constants(&chassis.turnPID, 6.75, 0.003, 50, 17.5); //6.5
   chassis.set_pid_constants(&chassis.swingPID, 15, 0, 125, 0);
 }
 

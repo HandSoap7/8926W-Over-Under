@@ -119,7 +119,7 @@ void initialize() {
 
 	// Initialize chassis and auton selector
 	chassis.initialize(3500, "/usd/AircraftTakeoff.gif");
-	ez::as::initialize("/usd/whynotshine.gif", "/usd/WiggleMain.gif");
+	ez::as::initialize("/usd/whynotshine.gif", "/usd/SFWdancingdog.gif");  //"/usd/WiggleMain.gif"
 
 	// Clear the LCD for the auton selector
 	pros::screen::erase();
@@ -182,8 +182,8 @@ void autonomous() {
 
 
   //SuperSimpleAWP();
-  Auton_Skills();
-  //SixBallSafe();
+  //Auton_Skills();
+  SixBallSafe();
   //ClosePushOver();
   //SarahSkills();
   //Driver_Skills_Preloads();
@@ -305,12 +305,12 @@ void opcontrol() {
     
 
     ///Horizontal Wings
-    HorizWingL.button(master.get_digital_new_press(R1));
-    HorizWingR.button(master.get_digital_new_press(L1));
+    HorizWingL.button(master.get_digital_new_press(Right));
+    HorizWingR.button(master.get_digital_new_press(Y));
 
     //Verical Wings
-    VertWingL.button(master.get_digital_new_press(Right));
-    VertWingR.button(master.get_digital_new_press(Y));
+    VertWingL.button(master.get_digital_new_press(L1));
+    VertWingR.button(master.get_digital_new_press(R1));
 
     //Piston and Side Hang
     PistonHang.button(master.get_digital_new_press(Up));
